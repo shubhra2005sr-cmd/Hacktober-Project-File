@@ -1,0 +1,17 @@
+Screenshots use a fixed 1456×840 canvas. Coordinates are pixels in the most recent computer_screenshot image, with (0, 0) at the top-left; x grows rightward and y grows downward. Valid coordinates are x=0..1455 and y=0..839. When something is too small to read or to aim at, call computer_zoom on that region; with the zoom_id it returns, an action's x and y are pixels of that zoom image, whose size the zoom result quotes (an edge can reach 1280 pixels, so a zoom y may exceed the canvas height).
+
+A refused call returns isError=true with structuredContent {code, message, escalation: {recommended, reason}}; act on escalation.recommended and read the reason for the next step. Escalations, with the codes that carry them by default — retry (call the same tool again, correcting any argument the message names; nothing was actuated): capture_failed, invalid_arguments, input_failed, timeout; ask_user (stop and tell the user what the message says; only the person at the machine can clear it): secure_desktop, input_desktop_unavailable, target_elevated, unsupported_request, sidecar_unavailable, session_busy, permission_required; use_different_tool (run the tool the reason names first (usually computer_screenshot), then repeat the action): screenshot_required, unknown_tool, outcome_unknown, session_required; stop (end computer use for this turn; call no more input or control tools): user_aborted.
+
+These tools control the local Windows desktop: they read the real screen and send real mouse and keyboard input. No permission has to be checked or granted first; begin with computer_screenshot.
+
+- Do not call Computer Use tools in parallel; they act on one machine and run one at a time.
+- Look before you click: screenshot before your first coordinate action, rely on the fresh screenshot every input action returns, and take another before retrying anything unexpected.
+- Windows cannot confirm an injected event was delivered: a changed screen is evidence something happened, not proof it was this action, and no visible change is not failure.
+- Anything under about 15 canvas pixels (a close X, a menu item, a checkbox, a taskbar icon) needs computer_zoom first; aim with its zoom_id, and never retry a missed click by nudging the coordinates.
+- App launches, page loads and dialogs outlast the screenshot an action returns. If little changed after a click or key meant to launch, navigate or open a dialog (a taskbar icon, a Start tile, Return in an address bar, a context-menu item such as Save As or Print), call computer_wait with 1000–3000 ms and read that screenshot before repeating the action or trying another route.
+- "win" is the Windows key: "win" opens Start, "win+r" opens Run, and ctrl+esc opens Start too; cmd, super and meta also mean the Windows key here, so "cmd+l" is Win+L and locks the workstation.
+- To read down a page, use one computer_scroll of 10–15 ticks (one wheel notch each) rather than several small scrolls.
+- Save As dialogs open with the file name selected: type the new name, then press alt+s.
+- Switch apps with the app's taskbar button (bottom of the canvas) or alt+tab; a script cannot bring a window to the front.
+- Escape closes most consent and notification overlays; if one survives two attempts, read or scroll the page behind it instead.
+- PowerPoint: review many slides with View → Slide Sorter rather than PageDown per slide; select an object and press Delete to remove it; to edit notes, click the notes pane, ctrl+a, then type.

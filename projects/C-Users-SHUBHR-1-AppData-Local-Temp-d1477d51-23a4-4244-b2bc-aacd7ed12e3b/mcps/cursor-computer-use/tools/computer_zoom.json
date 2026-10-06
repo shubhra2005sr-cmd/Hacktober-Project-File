@@ -1,0 +1,35 @@
+{
+  "name": "computer_zoom",
+  "description": "Return a region of the latest screenshot as a separate image at native resolution (up to 4×), so small or dense UI becomes legible. (x1, y1) is the top-left corner and (x2, y2) the bottom-right, inclusive; 20% padding is added; the region may be up to 914 canvas px on its long edge at any aspect, and one under 120×60 is widened to it. The result quotes a zoom_id and the image size: pass that zoom_id with x and y in zoom-image pixels to computer_click, computer_move, computer_scroll, or computer_drag. Actions still return a full-canvas screenshot, and a zoom_id describes the screen as it was when taken.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "x1": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1455
+      },
+      "y1": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 839
+      },
+      "x2": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1455
+      },
+      "y2": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 839
+      }
+    },
+    "required": [
+      "x1",
+      "y1",
+      "x2",
+      "y2"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "computer_wait",
+  "description": "Wait for the screen to settle (page load, animation). Returns a screenshot only if the screen changed; otherwise text that your last one still stands. Prefer over repeated screenshots.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "ms": {
+        "type": "integer",
+        "maximum": 30000,
+        "description": "Milliseconds to wait. Defaults to 1000."
+      }
+    }
+  }
+}

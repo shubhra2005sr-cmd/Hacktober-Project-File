@@ -1,0 +1,23 @@
+{
+  "name": "computer_move",
+  "description": "Move the mouse cursor to a screen coordinate without clicking. Useful for revealing hover UI.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "x": {
+        "type": "integer"
+      },
+      "y": {
+        "type": "integer"
+      },
+      "zoom_id": {
+        "type": "string",
+        "description": "Id from a computer_zoom result: x and y are then pixels of that zoom image."
+      }
+    },
+    "required": [
+      "x",
+      "y"
+    ]
+  }
+}

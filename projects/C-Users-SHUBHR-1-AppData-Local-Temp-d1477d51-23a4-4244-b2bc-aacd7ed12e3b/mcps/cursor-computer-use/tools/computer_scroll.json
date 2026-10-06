@@ -1,0 +1,39 @@
+{
+  "name": "computer_scroll",
+  "description": "Scroll at a screen coordinate.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "x": {
+        "type": "integer"
+      },
+      "y": {
+        "type": "integer"
+      },
+      "direction": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "left",
+          "right"
+        ],
+        "description": "Scroll direction. Defaults to down."
+      },
+      "amount": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "description": "Scroll amount in wheel ticks. Defaults to 10."
+      },
+      "zoom_id": {
+        "type": "string",
+        "description": "Id from a computer_zoom result: x and y are then pixels of that zoom image."
+      }
+    },
+    "required": [
+      "x",
+      "y"
+    ]
+  }
+}

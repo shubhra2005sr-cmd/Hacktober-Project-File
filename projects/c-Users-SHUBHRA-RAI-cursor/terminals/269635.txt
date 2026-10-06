@@ -1,0 +1,20 @@
+---
+pid: 17184
+cwd: "c:\\Users\\SHUBHRA RAI\\.cursor"
+command: ".\\venv\\Scripts\\python.exe api\\index.py"
+title: "Start Flask campus navigation server"
+status: running  
+started_at: 2026-10-06T04:41:31.949Z
+running_for_ms: 821295   
+---
+ * Serving Flask app 'index'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 459-964-542
+127.0.0.1 - - [06/Oct/2026 10:11:34] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2026 10:11:34] "GET /json/version HTTP/1.1" 404 -
+127.0.0.1 - - [06/Oct/2026 10:11:34] "GET / HTTP/1.1" 200 -

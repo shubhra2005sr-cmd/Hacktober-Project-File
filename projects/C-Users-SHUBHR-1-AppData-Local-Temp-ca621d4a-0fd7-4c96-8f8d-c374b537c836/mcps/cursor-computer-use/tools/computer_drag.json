@@ -1,0 +1,50 @@
+{
+  "name": "computer_drag",
+  "description": "Press the mouse button at one coordinate, drag to another, and release. Or pass path (2–64 points) to drag through them in order in one call (a whole outline); a path of over two points must stay inside the window it starts in.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "from": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        }
+      },
+      "to": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          }
+        }
+      },
+      "path": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 64,
+        "description": "{x, y} points, in order; replaces from and to."
+      },
+      "button": {
+        "type": "string",
+        "enum": [
+          "left",
+          "right",
+          "middle"
+        ],
+        "description": "Defaults to left."
+      },
+      "zoom_id": {
+        "type": "string",
+        "description": "Id from a computer_zoom result: the points are then pixels of that zoom image."
+      }
+    }
+  }
+}

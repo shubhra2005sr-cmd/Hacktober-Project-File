@@ -1,0 +1,17 @@
+{
+  "name": "computer_key",
+  "description": "Press a key or chord on the Windows keyboard, e.g. \"Return\", \"Escape\", \"Tab\", \"ctrl+l\", \"win+r\". Join modifiers with \"+\" (ctrl, alt, shift, win; cmd, super and meta also mean win). A modifier alone taps that key: \"alt\" taps Alt (Office KeyTips and the classic menu bar; follow with the tab letter, \"alt h\", or a second call); \"shift\" and \"ctrl\" tap those keys. Key names: space, backspace, delete (forward), insert, left, right, up, down, home, end, pageup, pagedown, f1–f12, apps (context menu), printscreen, capslock, numlock, scrolllock, pause, volumeup, volumedown, volumemute, mediaplaypause, medianext, mediaprev, mediastop, or any single character. Separate independent presses with a space (\"win r\" taps Win, then r).",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "maxLength": 100,
+        "description": "Key or chord."
+      }
+    },
+    "required": [
+      "key"
+    ]
+  }
+}
