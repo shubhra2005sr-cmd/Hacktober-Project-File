@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Navigation System</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; color: #333; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; margin-bottom: 20px; font-size: 24px; text-align: center; }
+        label { font-weight: 600; display: block; margin: 12px 0 6px; }
+        select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
+        button { background: #1a73e8; color: white; border: none; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #1557b0; }
+        .result { margin-top: 20px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
+        .result p { margin: 6px 0; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🏫 Campus Navigation System</h1>
+
+    <label for="start">Select Starting Location:</label>
+    <select id="start">
+        <option value="Main Gate">Main Gate</option>
+        <option value="Library">Central Library</option>
+        <option value="CS Dept">CS Department</option>
+        <option value="Hostel Area">Hostel Area</option>
+    </select>
+
+    <label for="destination">Select Destination:</label>
+    <select id="destination">
+        <option value="CS Dept">CS Department</option>
+        <option value="Library">Central Library</option>
+        <option value="EC Dept">EC Department</option>
+        <option value="Canteen">Campus Canteen</option>
+        <option value="Sports Complex">Sports Complex</option>
+    </select>
+
+    <button onclick="calculateRoute()">Find Route & Directions</button>
+
+    <div id="result" class="result">
+        <h3 style="color: #1a73e8; margin-bottom: 8px;">Route Details</h3>
+        <p><strong>Distance:</strong> <span id="dist"></span> meters</p>
+        <p><strong>Est. Time:</strong> <span id="time"></span> mins (walking)</p>
+        <p><strong>Directions:</strong> <span id="directions"></span></p>
+    </div>
+</div>
+
+<script>
+    const routes = {
+        "Main Gate-CS Dept": { dist: 450, time: 6, dir: "Head straight along Main Avenue, turn right at Block B." },
+        "Main Gate-Library": { dist: 250, time: 3, dir: "Walk straight 200m; Library is on your left opposite the admin block." },
+        "Library-CS Dept": { dist: 300, time: 4, dir: "Take the internal walkway behind Library towards Academic Block 1." },
+        "CS Dept-EC Dept": { dist: 150, time: 2, dir: "Cross the lawn directly facing CS Block to reach EC Block." },
+        "CS Dept-Canteen": { dist: 200, time: 3, dir: "Walk south past the auditorium; Canteen is right behind." },
+        "Hostel Area-Sports Complex": { dist: 500, time: 7, dir: "Follow perimeter road past Hostel Gate 2 towards the open ground." }
+    };
+
+    function calculateRoute() {
+        const start = document.getElementById("start").value;
+        const dest = document.getElementById("destination").value;
+        const resDiv = document.getElementById("result");
+
+        if (start === dest) {
+            alert("Starting location and destination cannot be the same!");
+            resDiv.style.display = "none";
+            return;
+        }
+
+        const key = `${start}-${dest}`;
+        const route = routes[key] || { 
+            dist: Math.floor(Math.random() * 300) + 200, 
+            time: Math.floor(Math.random() * 5) + 3, 
+            dir: `Follow central campus signage from ${start} toward ${dest}.` 
+        };
+
+        document.getElementById("dist").innerText = route.dist;
+        document.getElementById("time").innerText = route.time;
+        document.getElementById("directions").innerText = route.dir;
+        resDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
