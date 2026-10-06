@@ -1,8 +1,0 @@
-{
-  "name": "computer_screenshot",
-  "description": "Take a screenshot of the primary display.",
-  "arguments": {
-    "type": "object",
-    "properties": {}
-  }
-}
