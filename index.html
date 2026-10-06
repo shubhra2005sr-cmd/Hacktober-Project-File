@@ -3,77 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Navigation Assistant</title>
+    <title>Smart Campus Navigation System</title>
     <style>
-        :root { --primary: #1a73e8; --primary-dark: #1557b0; --bg: #f8f9fa; --text: #202124; --text-light: #5f6368; --shadow: 0 4px 18px rgba(0,0,0,0.08); }
+        :root { 
+            --primary: #1a73e8; 
+            --primary-dark: #1557b0; 
+            --bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --text: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --accent: #10b981; 
+            --border: #334155; 
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); 
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; -webkit-font-smoothing: antialiased; }
-        .card { background: white; width: 100%; max-width: 720px; padding: 30px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid #e0e0e0; }
-        h1 { color: var(--primary); margin-bottom: 25px; font-size: 26px; text-align: center; font-weight: 700; letter-spacing: -0.5px; }
-        h1 span { font-size: 1.2em; vertical-align: middle; margin-right: 8px; }
+        body { background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 25px 15px; -webkit-font-smoothing: antialiased; }
+        .card { background: var(--card-bg); width: 100%; max-width: 820px; padding: 32px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         
-        .route-builder { border: 1px solid #e0e0e0; padding: 20px; border-radius: 12px; background: #fafafa; margin-bottom: 20px; }
-        label { font-weight: 600; display: block; margin: 15px 0 8px; color: var(--text); font-size: 14px; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        h1 { color: #38bdf8; font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        
+        .badge { background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; border: 1px solid rgba(56, 189, 248, 0.3); }
+
+        .route-builder { border: 1px solid var(--border); padding: 22px; border-radius: 14px; background: rgba(15, 23, 42, 0.6); margin-bottom: 20px; }
+        label { font-weight: 600; display: block; margin: 14px 0 6px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
         label.first { margin-top: 0; }
         
-        .stop-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .stop-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: slideDown 0.25s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
         
-        select, button { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 15px; outline: none; transition: 0.2s; }
-        select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
-        select { background: white; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235f6368' d='M1.5 4.5l4.5 4.5 4.5-4.5h-9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; }
+        select, input, button { width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--border); font-size: 15px; outline: none; transition: 0.2s; background: #0f172a; color: var(--text); }
+        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.25); }
+        
+        .mode-selector { display: flex; gap: 10px; margin-top: 10px; }
+        .mode-btn { padding: 10px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: var(--text-muted); cursor: pointer; text-align: center; }
+        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .btn-add { background: none; color: var(--primary); border: 2px dashed #bbdefb; font-weight: 600; margin-top: 10px; cursor: pointer; color: var(--primary-dark); }
-        .btn-add:hover { background: #e8f0fe; border-color: var(--primary); }
-        .btn-remove { background: #fee8e7; color: #d93025; border: none; padding: 14px 18px; width: auto; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; }
-        .btn-remove:hover { background: #fce8e6; color: #a50e0e; }
-        .btn-submit { background: var(--primary); color: white; border: none; font-weight: bold; margin-top: 25px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
-        .btn-submit:hover { background: var(--primary-dark); box-shadow: 0 4px 10px rgba(26,115,232,0.4); transform: translateY(-1px); }
+        .btn-add { background: transparent; color: #38bdf8; border: 2px dashed rgba(56, 189, 248, 0.4); font-weight: 600; margin-top: 8px; cursor: pointer; }
+        .btn-add:hover { background: rgba(56, 189, 248, 0.1); border-color: #38bdf8; }
+        .btn-remove { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 13px 16px; width: auto; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn-remove:hover { background: rgba(239, 68, 68, 0.3); }
+        
+        .action-row { display: flex; gap: 12px; margin-top: 22px; }
+        .btn-submit { background: var(--primary); color: white; border: none; font-weight: 700; cursor: pointer; font-size: 16px; box-shadow: 0 4px 12px rgba(26,115,232,0.25); flex: 3; }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-share { background: rgba(16, 185, 129, 0.15); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 700; cursor: pointer; font-size: 14px; flex: 1; }
+        .btn-share:hover { background: rgba(16, 185, 129, 0.25); }
 
-        .result { margin-top: 25px; padding: 20px; background: #e8f0fe; border-radius: 12px; display: none; border: 1px solid #bbdefb; }
-        .result h3 { color: var(--primary-dark); margin-bottom: 12px; font-size: 18px; }
-        .result p { margin: 8px 0; font-size: 15px; color: var(--text-light); line-height: 1.5; }
+        .amenities-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+        .amenity-chip { font-size: 12px; padding: 6px 12px; border-radius: 16px; background: #0f172a; color: var(--text-muted); cursor: pointer; font-weight: 600; border: 1px solid var(--border); transition: 0.2s; }
+        .amenity-chip.active { background: rgba(16, 185, 129, 0.2); color: var(--accent); border-color: var(--accent); }
+
+        .result { margin-top: 25px; padding: 20px; background: rgba(15, 23, 42, 0.8); border-radius: 14px; display: none; border: 1px solid var(--border); }
+        .result h3 { color: #38bdf8; margin-bottom: 10px; font-size: 18px; }
+        .result p { margin: 6px 0; font-size: 14px; color: var(--text-muted); line-height: 1.5; }
         .result strong { color: var(--text); }
         
         #map-area { margin-top: 25px; display: none; }
-        #map-area h4 { margin-bottom: 15px; color: var(--text); font-size: 16px; font-weight: 600; }
-        .map-container { border: 2px solid #3c4043; border-radius: 12px; overflow: hidden; background: #202124; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        svg { width: 100%; height: auto; max-height: 440px; display: block; }
+        .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .map-container { border: 2px solid var(--border); border-radius: 14px; overflow: hidden; background: #0b1120; box-shadow: 0 6px 18px rgba(0,0,0,0.3); position: relative; }
+        svg { width: 100%; height: auto; max-height: 460px; display: block; }
 
-        /* --- Clear Road & Campus Styling --- */
-        .svg-grass { fill: #d7e8d5; }
-        
-        /* High-visibility primary avenues */
-        .svg-road-base { fill: none; stroke: #3c4043; stroke-width: 24; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-surface { fill: none; stroke: #5f6368; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-line { fill: none; stroke: #fbbc04; stroke-width: 2; stroke-dasharray: 6 6; stroke-linecap: round; stroke-linejoin: round; }
+        /* SVG Road Network Styling */
+        .svg-grass { fill: #0f172a; }
+        .svg-road-base { fill: none; stroke: #020617; stroke-width: 24; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-road-surface { fill: none; stroke: #1e293b; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-road-line { fill: none; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 6 6; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* 3D Buildings & Labels */
-        .bldg-side { fill: #bdc1c6; }
-        .bldg-top { fill: #ffffff; stroke: #1a73e8; stroke-width: 2; rx: 6; }
-        .bldg-label { font-size: 11px; font-weight: 700; fill: #202124; text-anchor: middle; pointer-events: none; }
-        .block-tag { font-size: 10px; font-weight: 800; fill: #1a73e8; text-anchor: middle; }
+        /* Buildings & Labels */
+        .bldg-top { fill: #1e293b; stroke: #38bdf8; stroke-width: 2; rx: 6; transition: 0.2s; cursor: pointer; }
+        .bldg-top:hover { fill: #334155; stroke: #f59e0b; }
+        .bldg-label { font-size: 11px; font-weight: 700; fill: #f8fafc; text-anchor: middle; pointer-events: none; }
+        .block-tag { font-size: 10px; font-weight: 800; fill: #38bdf8; text-anchor: middle; }
 
-        /* Strict Road-Following Animated Route Overlay */
-        .active-road-path { fill: none; stroke: #00e676; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 6; animation: roadFlow 0.8s linear infinite; }
+        /* Active Strict Road Path */
+        .active-road-path { fill: none; stroke: #10b981; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 6; animation: roadFlow 0.8s linear infinite; }
         @keyframes roadFlow { to { stroke-dashoffset: -14; } }
 
-        /* Stop Markers */
-        .stop-glow { fill: rgba(0, 230, 118, 0.3); }
-        .stop-pin { fill: #d93025; stroke: #ffffff; stroke-width: 2; }
+        /* Live Moving Marker */
+        .animated-traveler { fill: #38bdf8; stroke: #ffffff; stroke-width: 2; r: 7; }
+
+        /* Stop Pins & Dynamic Amenities */
+        .stop-glow { fill: rgba(16, 185, 129, 0.25); }
+        .stop-pin { fill: #ef4444; stroke: #ffffff; stroke-width: 2; }
         .stop-text { fill: white; font-size: 11px; font-weight: bold; text-anchor: middle; }
+        .amenity-icon { fill: #f59e0b; font-size: 12px; font-weight: bold; text-anchor: middle; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1><span>🏫</span>Campus Navigation Assistant</h1>
+    <div class="header-bar">
+        <h1>🏫 Campus Navigator</h1>
+        <span class="badge">PRO v3.0</span>
+    </div>
 
     <div class="route-builder">
-        <label class="first">Start Point:</label>
+        <label class="first">Quick Search Landmark:</label>
+        <input type="text" id="quick-search" placeholder="Type location (e.g. Library, Canteen)..." oninput="filterLocations(this.value)">
+
+        <label>Start Point:</label>
         <div class="stop-row">
             <select class="location-select">
-                <option value="Main Gate">Main Gate</option>
+                <option value="Main Gate">Main Gate Station</option>
                 <option value="Library">Central Library</option>
                 <option value="CS Dept">CS Department (Block A)</option>
                 <option value="EC Dept">EC Department (Block C)</option>
@@ -85,13 +118,13 @@
 
         <div id="additional-stops"></div>
 
-        <button type="button" class="btn-add" onclick="addStop()">+ Add a Via Point (Stop)</button>
+        <button type="button" class="btn-add" onclick="addStop()">+ Add Via Point / Stop</button>
 
         <label>Final Destination:</label>
         <div class="stop-row">
             <select class="location-select">
                 <option value="Canteen" selected>Campus Canteen</option>
-                <option value="Main Gate">Main Gate</option>
+                <option value="Main Gate">Main Gate Station</option>
                 <option value="Library">Central Library</option>
                 <option value="CS Dept">CS Department (Block A)</option>
                 <option value="EC Dept">EC Department (Block C)</option>
@@ -99,77 +132,80 @@
                 <option value="Sports">Sports Complex</option>
             </select>
         </div>
+
+        <label>Travel Mode:</label>
+        <div class="mode-selector">
+            <button type="button" class="mode-btn active" onclick="setMode(this, 'walk')">🚶 Walking</button>
+            <button type="button" class="mode-btn" onclick="setMode(this, 'cycle')">🚴 Bicycle</button>
+            <button type="button" class="mode-btn" onclick="setMode(this, 'accessible')">♿ Accessible</button>
+        </div>
+
+        <label>Nearby Amenities Layer:</label>
+        <div class="amenities-bar">
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'restrooms')">🚻 Restrooms</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'water')">🚰 Water Station</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'ramps')">♿ Wheelchair Ramps</span>
+        </div>
     </div>
 
-    <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find My Route</button>
+    <div class="action-row">
+        <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find My Route</button>
+        <button type="button" class="btn-share" onclick="copyRouteLink()">🔗 Share</button>
+    </div>
 
     <div id="result" class="result">
         <h3>Route Details</h3>
         <p><strong>Path:</strong> <span id="route-path"></span></p>
-        <p><strong>Distance:</strong> <span id="dist"></span> meters</p>
-        <p><strong>Est. Walking Time:</strong> <span id="time"></span> minutes</p>
+        <p><strong>Total Distance:</strong> <span id="dist"></span> meters</p>
+        <p><strong>Est. Travel Time:</strong> <span id="time"></span> mins (<span id="mode-text">walking</span>)</p>
         <p><strong>Directions:</strong> <span id="directions"></span></p>
     </div>
 
     <div id="map-area">
-        <h4>Campus Layout & Road Network</h4>
+        <div class="map-header">
+            <h4 style="font-size: 15px; font-weight: 700;">Interactive Campus Layout</h4>
+            <span style="font-size: 12px; color: var(--text-muted);">Path strictly follows road network</span>
+        </div>
         <div class="map-container">
             <svg id="campus-svg" viewBox="0 0 650 450">
-                <!-- 1. GROUNDS -->
                 <rect class="svg-grass" width="650" height="450" />
 
-                <!-- 2. CLEAR ROAD NETWORK (Outer ring + Central grid roads) -->
+                <!-- Road Network Layer -->
                 <g id="roads-layer">
-                    <!-- Road Outlines -->
                     <path class="svg-road-base" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
-                    <!-- Road Asphalt Surface -->
                     <path class="svg-road-surface" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
-                    <!-- Yellow Center Lines -->
                     <path class="svg-road-line" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
                 </g>
 
-                <!-- 3. BUILDINGS (Set back safely away from roads) -->
+                <!-- Buildings Layer -->
                 <g id="buildings-layer">
-                    <!-- Main Gate -->
-                    <rect class="bldg-side" x="25" y="380" width="110" height="25" rx="4"/>
                     <rect class="bldg-top" x="20" y="375" width="110" height="25" />
                     <text class="bldg-label" x="75" y="392">Main Gate Station</text>
 
-                    <!-- Library -->
-                    <rect class="bldg-side" x="125" y="35" width="100" height="35" rx="4"/>
                     <rect class="bldg-top" x="120" y="30" width="100" height="35" />
                     <text class="bldg-label" x="170" y="52">Central Library</text>
 
-                    <!-- CS Dept -->
-                    <rect class="bldg-side" x="365" y="35" width="110" height="35" rx="4"/>
                     <rect class="bldg-top" x="360" y="30" width="110" height="35" />
                     <text class="block-tag" x="415" y="24">BLOCK A</text>
                     <text class="bldg-label" x="415" y="52">CS Department</text>
 
-                    <!-- EC Dept -->
-                    <rect class="bldg-side" x="365" y="245" width="110" height="35" rx="4"/>
                     <rect class="bldg-top" x="360" y="240" width="110" height="35" />
                     <text class="block-tag" x="415" y="234">BLOCK C</text>
                     <text class="bldg-label" x="415" y="262">EC Department</text>
 
-                    <!-- Hostels -->
-                    <rect class="bldg-side" x="125" y="245" width="110" height="35" rx="4"/>
                     <rect class="bldg-top" x="120" y="240" width="110" height="35" />
                     <text class="bldg-label" x="175" y="262">Student Hostels</text>
 
-                    <!-- Canteen -->
-                    <rect class="bldg-side" x="365" y="315" width="110" height="35" rx="4"/>
                     <rect class="bldg-top" x="360" y="310" width="110" height="35" />
                     <text class="bldg-label" x="415" y="332">Campus Canteen</text>
 
-                    <!-- Sports Complex -->
-                    <rect class="bldg-side" x="125" y="125" width="110" height="35" rx="4"/>
                     <rect class="bldg-top" x="120" y="120" width="110" height="35" />
                     <text class="bldg-label" x="175" y="142">Sports Complex</text>
                 </g>
 
-                <!-- 4. DYNAMIC STRICT ROAD PATH OVERLAY -->
                 <path id="active-road-path" class="active-road-path" d="" />
+                <circle id="animated-traveler" class="animated-traveler" cx="-20" cy="-20" />
+                <g id="amenities-layer"></g>
                 <g id="markers-layer"></g>
             </svg>
         </div>
@@ -177,82 +213,90 @@
 </div>
 
 <script>
-    // Landmark Dropoff Points (Access gates directly touching the road centerlines)
+    let currentMode = 'walk';
+    let activeAmenities = new Set();
+    let animationTimer = null;
+
     const landmarks = {
-        "Main Gate": "J_GATE",
-        "Library": "J_LIB",
-        "CS Dept": "J_CS",
-        "EC Dept": "J_EC",
-        "Hostels": "J_HOSTEL",
-        "Canteen": "J_CANTEEN",
-        "Sports": "J_SPORTS"
+        "Main Gate": "J_GATE", "Library": "J_LIB", "CS Dept": "J_CS",
+        "EC Dept": "J_EC", "Hostels": "J_HOSTEL", "Canteen": "J_CANTEEN", "Sports": "J_SPORTS"
     };
 
-    // Campus Road Graph Nodes (All on SVG road coordinates)
     const nodes = {
-        "J_GATE":    { x: 80,  y: 410 },
-        "J_SOUTH":   { x: 80,  y: 370 },
-        "J_MID_W":   { x: 80,  y: 220 },
-        "J_SPORTS":  { x: 80,  y: 140 },
-        "J_NORTH_W": { x: 80,  y: 80  },
-        "J_LIB":     { x: 170, y: 80  },
-        "J_NORTH_C": { x: 320, y: 80  },
-        "J_CS":      { x: 415, y: 80  },
-        "J_NORTH_E": { x: 570, y: 80  },
-        "J_MID_C":   { x: 320, y: 220 },
-        "J_HOSTEL":  { x: 175, y: 220 },
-        "J_EC":      { x: 415, y: 220 },
-        "J_MID_E":   { x: 570, y: 220 },
-        "J_SOUTH_C": { x: 320, y: 370 },
-        "J_CANTEEN": { x: 415, y: 370 },
-        "J_SOUTH_E": { x: 570, y: 370 }
+        "J_GATE": { x: 80, y: 410 }, "J_SOUTH": { x: 80, y: 370 }, "J_MID_W": { x: 80, y: 220 },
+        "J_SPORTS": { x: 80, y: 140 }, "J_NORTH_W": { x: 80, y: 80 }, "J_LIB": { x: 170, y: 80 },
+        "J_NORTH_C": { x: 320, y: 80 }, "J_CS": { x: 415, y: 80 }, "J_NORTH_E": { x: 570, y: 80 },
+        "J_MID_C": { x: 320, y: 220 }, "J_HOSTEL": { x: 175, y: 220 }, "J_EC": { x: 415, y: 220 },
+        "J_MID_E": { x: 570, y: 220 }, "J_SOUTH_C": { x: 320, y: 370 }, "J_CANTEEN": { x: 415, y: 370 }, "J_SOUTH_E": { x: 570, y: 370 }
     };
 
-    // Adjacency graph for road connections
     const roadGraph = {
-        "J_GATE":    ["J_SOUTH"],
-        "J_SOUTH":   ["J_GATE", "J_MID_W"],
-        "J_MID_W":   ["J_SOUTH", "J_SPORTS", "J_HOSTEL"],
-        "J_SPORTS":  ["J_MID_W", "J_NORTH_W"],
-        "J_NORTH_W": ["J_SPORTS", "J_LIB"],
-        "J_LIB":     ["J_NORTH_W", "J_NORTH_C"],
-        "J_NORTH_C": ["J_LIB", "J_CS", "J_MID_C"],
-        "J_CS":      ["J_NORTH_C", "J_NORTH_E"],
-        "J_NORTH_E": ["J_CS", "J_MID_E"],
-        "J_MID_C":   ["J_NORTH_C", "J_HOSTEL", "J_EC", "J_SOUTH_C"],
-        "J_HOSTEL":  ["J_MID_W", "J_MID_C"],
-        "J_EC":      ["J_MID_C", "J_MID_E"],
-        "J_MID_E":   ["J_NORTH_E", "J_EC", "J_SOUTH_E"],
-        "J_SOUTH_C": ["J_MID_C", "J_CANTEEN"],
-        "J_CANTEEN": ["J_SOUTH_C", "J_SOUTH_E"],
-        "J_SOUTH_E": ["J_MID_E", "J_CANTEEN"]
+        "J_GATE": ["J_SOUTH"], "J_SOUTH": ["J_GATE", "J_MID_W"], "J_MID_W": ["J_SOUTH", "J_SPORTS", "J_HOSTEL"],
+        "J_SPORTS": ["J_MID_W", "J_NORTH_W"], "J_NORTH_W": ["J_SPORTS", "J_LIB"], "J_LIB": ["J_NORTH_W", "J_NORTH_C"],
+        "J_NORTH_C": ["J_LIB", "J_CS", "J_MID_C"], "J_CS": ["J_NORTH_C", "J_NORTH_E"], "J_NORTH_E": ["J_CS", "J_MID_E"],
+        "J_MID_C": ["J_NORTH_C", "J_HOSTEL", "J_EC", "J_SOUTH_C"], "J_HOSTEL": ["J_MID_W", "J_MID_C"],
+        "J_EC": ["J_MID_C", "J_MID_E"], "J_MID_E": ["J_NORTH_E", "J_EC", "J_SOUTH_E"], "J_SOUTH_C": ["J_MID_C", "J_CANTEEN"],
+        "J_CANTEEN": ["J_SOUTH_C", "J_SOUTH_E"], "J_SOUTH_E": ["J_MID_E", "J_CANTEEN"]
     };
 
-    // Breadth-First Search (BFS) to find shortest path purely via road intersections
-    function findRoadPath(startNode, endNode) {
-        if (startNode === endNode) return [startNode];
-        const queue = [[startNode]];
-        const visited = new Set([startNode]);
+    function setMode(btn, mode) {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMode = mode;
+    }
 
+    function toggleAmenity(chip, type) {
+        chip.classList.toggle('active');
+        if (activeAmenities.has(type)) activeAmenities.delete(type);
+        else activeAmenities.add(type);
+        renderAmenities();
+    }
+
+    function renderAmenities() {
+        let html = '';
+        if (activeAmenities.has('restrooms')) {
+            html += `<text class="amenity-icon" x="170" y="100">🚻</text><text class="amenity-icon" x="415" y="100">🚻</text>`;
+        }
+        if (activeAmenities.has('water')) {
+            html += `<text class="amenity-icon" x="175" y="200">🚰</text><text class="amenity-icon" x="415" y="350">🚰</text>`;
+        }
+        if (activeAmenities.has('ramps')) {
+            html += `<text class="amenity-icon" x="80" y="390">♿</text><text class="amenity-icon" x="320" y="240">♿</text>`;
+        }
+        document.getElementById('amenities-layer').innerHTML = html;
+    }
+
+    function filterLocations(query) {
+        const selects = document.querySelectorAll('.location-select');
+        selects.forEach(select => {
+            Array.from(select.options).forEach(opt => {
+                const match = opt.text.toLowerCase().includes(query.toLowerCase());
+                opt.style.display = match ? '' : 'none';
+            });
+        });
+    }
+
+    function copyRouteLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Route link copied to clipboard!");
+    }
+
+    function findRoadPath(start, end) {
+        if (start === end) return [start];
+        const queue = [[start]], visited = new Set([start]);
         while (queue.length > 0) {
-            const path = queue.shift();
-            const curr = path[path.length - 1];
-
+            const path = queue.shift(), curr = path[path.length - 1];
             for (const neighbor of (roadGraph[curr] || [])) {
-                if (neighbor === endNode) return [...path, neighbor];
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push([...path, neighbor]);
-                }
+                if (neighbor === end) return [...path, neighbor];
+                if (!visited.has(neighbor)) { visited.add(neighbor); queue.push([...path, neighbor]); }
             }
         }
-        return [startNode, endNode];
+        return [start, end];
     }
 
     function addStop() {
         const container = document.getElementById("additional-stops");
         if (container.children.length >= 3) { alert("Maximum 3 via points allowed."); return; }
-        
         const div = document.createElement("div");
         div.className = "stop-row";
         div.innerHTML = `
@@ -269,6 +313,20 @@
         container.appendChild(div);
     }
 
+    function animateTraveler(waypointKeys) {
+        if (animationTimer) clearInterval(animationTimer);
+        const traveler = document.getElementById("animated-traveler");
+        let currentIdx = 0;
+
+        animationTimer = setInterval(() => {
+            if (currentIdx >= waypointKeys.length) { currentIdx = 0; }
+            const pt = nodes[waypointKeys[currentIdx]];
+            traveler.setAttribute("cx", pt.x);
+            traveler.setAttribute("cy", pt.y);
+            currentIdx++;
+        }, 400);
+    }
+
     function calculateMultiStopRoute() {
         const selects = document.querySelectorAll(".location-select");
         const stops = Array.from(selects).map(s => s.value);
@@ -277,31 +335,23 @@
             alert("Please ensure all stops in your route are unique."); return;
         }
 
-        let fullWaypoints = [];
-        let totalDist = 0;
-
+        let fullWaypoints = [], totalDist = 0;
         for (let i = 0; i < stops.length - 1; i++) {
-            const startLandmark = landmarks[stops[i]];
-            const endLandmark = landmarks[stops[i+1]];
-            const legPath = findRoadPath(startLandmark, endLandmark);
-            
-            if (i > 0) legPath.shift(); // Avoid duplicating join nodes
+            const legPath = findRoadPath(landmarks[stops[i]], landmarks[stops[i+1]]);
+            if (i > 0) legPath.shift();
             fullWaypoints.push(...legPath);
             totalDist += (legPath.length - 1) * 110;
         }
 
-        // Generate SVG Path strictly along road node coordinates
         let pathD = "";
-        fullWaypoints.forEach((nodeKey, idx) => {
-            const pt = nodes[nodeKey];
+        fullWaypoints.forEach((key, idx) => {
+            const pt = nodes[key];
             pathD += (idx === 0) ? `M ${pt.x} ${pt.y}` : ` L ${pt.x} ${pt.y}`;
         });
 
-        // Place markers at user stop destinations
         let markersHTML = "";
         stops.forEach((stop, idx) => {
-            const nodeKey = landmarks[stop];
-            const pt = nodes[nodeKey];
+            const pt = nodes[landmarks[stop]];
             markersHTML += `
                 <circle class="stop-glow" cx="${pt.x}" cy="${pt.y}" r="15" />
                 <circle class="stop-pin" cx="${pt.x}" cy="${pt.y}" r="9" />
@@ -309,18 +359,22 @@
             `;
         });
 
-        const estTime = Math.ceil(totalDist / 60);
+        const speedFactor = currentMode === 'cycle' ? 220 : currentMode === 'accessible' ? 45 : 60;
+        const estTime = Math.ceil(totalDist / speedFactor);
 
-        // Update Results Display
         document.getElementById("route-path").innerText = stops.join(" → ");
         document.getElementById("dist").innerText = totalDist;
         document.getElementById("time").innerText = estTime;
-        document.getElementById("directions").innerText = `Follow main campus avenues strictly along road network: ${stops.join(" via ")}.`;
+        document.getElementById("mode-text").innerText = currentMode;
+        document.getElementById("directions").innerText = `Follow campus avenues strictly along road network: ${stops.join(" via ")}.`;
 
         document.getElementById("result").style.display = "block";
         document.getElementById("map-area").style.display = "block";
         document.getElementById("active-road-path").setAttribute("d", pathD);
         document.getElementById("markers-layer").innerHTML = markersHTML;
+        
+        renderAmenities();
+        animateTraveler(fullWaypoints);
     }
 </script>
 
