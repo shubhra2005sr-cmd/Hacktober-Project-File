@@ -13,13 +13,14 @@
             --text: #f9fafb; 
             --text-muted: #9ca3af; 
             --accent: #10b981; 
+            --danger: #ef4444;
             --border: #1f2937; 
             --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5); 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         body { background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 25px 15px; -webkit-font-smoothing: antialiased; }
-        .card { background: var(--card-bg); width: 100%; max-width: 950px; padding: 32px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card { background: var(--card-bg); width: 100%; max-width: 1000px; padding: 32px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         
         .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         h1 { color: var(--primary); font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -36,9 +37,13 @@
         select, input, button { width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--border); font-size: 14px; outline: none; transition: 0.2s; background: #0b0f19; color: var(--text); }
         select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
         
-        .mode-selector { display: flex; gap: 10px; margin-top: 10px; }
-        .mode-btn { padding: 10px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); background: #0b0f19; color: var(--text-muted); cursor: pointer; text-align: center; }
-        .mode-btn.active { background: var(--primary-dark); color: white; border-color: var(--primary); }
+        .mode-selector, .condition-selector { display: flex; gap: 10px; margin-top: 10px; }
+        .mode-btn, .cond-btn { padding: 10px; font-size: 13px; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); background: #0b0f19; color: var(--text-muted); cursor: pointer; text-align: center; flex: 1; }
+        .mode-btn.active, .cond-btn.active { background: var(--primary-dark); color: white; border-color: var(--primary); }
+
+        .preset-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .preset-chip { font-size: 12px; padding: 6px 12px; border-radius: 16px; background: rgba(56, 189, 248, 0.1); color: var(--primary); cursor: pointer; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.3); transition: 0.2s; }
+        .preset-chip:hover { background: rgba(56, 189, 248, 0.25); }
 
         .btn-add { background: transparent; color: var(--primary); border: 2px dashed rgba(56, 189, 248, 0.4); font-weight: 600; margin-top: 8px; cursor: pointer; }
         .btn-add:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--primary); }
@@ -55,11 +60,22 @@
         .amenity-chip { font-size: 12px; padding: 6px 12px; border-radius: 16px; background: #0b0f19; color: var(--text-muted); cursor: pointer; font-weight: 600; border: 1px solid var(--border); transition: 0.2s; }
         .amenity-chip.active { background: rgba(16, 185, 129, 0.2); color: var(--accent); border-color: var(--accent); }
 
+        /* Dashboard Results Grid */
         .result { margin-top: 25px; padding: 20px; background: rgba(15, 23, 42, 0.8); border-radius: 14px; display: none; border: 1px solid var(--border); }
-        .result h3 { color: var(--primary); margin-bottom: 10px; font-size: 18px; }
-        .result p { margin: 6px 0; font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-        .result strong { color: var(--text); }
-        
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 15px 0; }
+        .metric-card { background: #0b0f19; border: 1px solid var(--border); padding: 14px; border-radius: 12px; text-align: center; }
+        .metric-card .val { font-size: 20px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+        .metric-card .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .directions-box { background: #0b0f19; border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-top: 15px; }
+        .directions-box h4 { color: var(--primary); font-size: 14px; margin-bottom: 8px; }
+        .directions-list { list-style: none; counter-reset: step-counter; }
+        .directions-list li { counter-increment: step-counter; position: relative; padding-left: 28px; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+        .directions-list li::before { content: counter(step-counter); position: absolute; left: 0; top: 0; width: 20px; height: 20px; background: rgba(56, 189, 248, 0.2); color: var(--primary); font-weight: 700; font-size: 11px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .qr-section { display: flex; gap: 15px; align-items: center; margin-top: 15px; background: #0b0f19; padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        .qr-section img { width: 70px; height: 70px; border-radius: 8px; border: 1px solid var(--border); }
+
         #map-area { margin-top: 25px; display: none; }
         .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .map-container { border: 2px solid var(--border); border-radius: 16px; overflow: hidden; background: #080d1a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
@@ -70,36 +86,40 @@
         .svg-grass-patch { fill: #0f1c33; rx: 10; }
         .svg-plaza { fill: #1e293b; rx: 6; }
         .svg-sports-ground { fill: #064e3b; stroke: #10b981; stroke-width: 1.5; rx: 12; }
-        .svg-track { fill: none; stroke: #b91c1c; stroke-width: 8; rx: 20; }
         .svg-pool { fill: #0284c7; stroke: #38bdf8; stroke-width: 2; rx: 6; }
         .svg-water { fill: #0369a1; opacity: 0.4; stroke: #38bdf8; stroke-width: 1.5; }
         .svg-parking { fill: #1e293b; stroke: #334155; stroke-dasharray: 3 3; rx: 4; }
 
-        /* Roads */
+        /* Interactive Roads for Blockage Toggling */
         .svg-road-curb { fill: none; stroke: #1e293b; stroke-width: 26; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-surface { fill: none; stroke: #0b0f19; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-marking { fill: none; stroke: #f59e0b; stroke-width: 1.5; stroke-dasharray: 5 5; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-road-surface { fill: none; stroke: #0b0f19; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; cursor: pointer; transition: stroke 0.2s; }
+        .svg-road-surface:hover { stroke: #1e293b; }
+        .svg-road-marking { fill: none; stroke: #f59e0b; stroke-width: 1.5; stroke-dasharray: 5 5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 
-        /* Buildings */
+        /* Obstacle Overlay */
+        .road-blocked { stroke: #ef4444 !important; stroke-dasharray: 4 4 !important; }
+
+        /* Buildings & Status Indicators */
         .bldg-group { cursor: pointer; transition: transform 0.2s; }
         .bldg-side { fill: #1e293b; }
         .bldg-top { fill: #111827; stroke: #38bdf8; stroke-width: 1.5; rx: 5; transition: 0.2s; }
         .bldg-group:hover .bldg-top { fill: #1f2937; stroke: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5)); }
-        .bldg-roof-detail { fill: #1e293b; rx: 2; }
         .bldg-label { font-size: 10px; font-weight: 700; fill: #f9fafc; text-anchor: middle; pointer-events: none; }
         .block-tag { font-size: 8px; font-weight: 800; fill: #38bdf8; text-anchor: middle; letter-spacing: 0.5px; }
+        .crowd-indicator { font-size: 9px; font-weight: 800; text-anchor: middle; }
 
         /* Dynamic Pathing & Markers */
-        .active-road-path { fill: none; stroke: #10b981; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 6; animation: roadFlow 0.8s linear infinite; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); }
+        .active-road-path { fill: none; stroke: #10b981; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 6; animation: roadFlow 0.8s linear infinite; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); pointer-events: none; }
         @keyframes roadFlow { to { stroke-dashoffset: -14; } }
 
-        .animated-traveler { fill: #38bdf8; stroke: #ffffff; stroke-width: 2.5; r: 7; filter: drop-shadow(0 0 8px #38bdf8); }
-        .stop-glow { fill: rgba(16, 185, 129, 0.3); animation: pulseGlow 1.5s infinite alternate; }
+        .animated-traveler { fill: #38bdf8; stroke: #ffffff; stroke-width: 2.5; r: 7; filter: drop-shadow(0 0 8px #38bdf8); pointer-events: none; }
+        .stop-glow { fill: rgba(16, 185, 129, 0.3); animation: pulseGlow 1.5s infinite alternate; pointer-events: none; }
         @keyframes pulseGlow { from { r: 12; opacity: 0.5; } to { r: 18; opacity: 0.9; } }
-        .stop-pin { fill: #ef4444; stroke: #ffffff; stroke-width: 2; }
-        .stop-text { fill: white; font-size: 11px; font-weight: bold; text-anchor: middle; }
-        .amenity-icon { fill: #f59e0b; font-size: 12px; font-weight: bold; text-anchor: middle; }
-        .tree-icon { fill: #047857; opacity: 0.8; }
+        .stop-pin { fill: #ef4444; stroke: #ffffff; stroke-width: 2; pointer-events: none; }
+        .stop-text { fill: white; font-size: 11px; font-weight: bold; text-anchor: middle; pointer-events: none; }
+        .amenity-icon { fill: #f59e0b; font-size: 12px; font-weight: bold; text-anchor: middle; pointer-events: none; }
+        .tree-icon { fill: #047857; opacity: 0.8; pointer-events: none; }
+        .obstacle-icon { font-size: 14px; font-weight: bold; text-anchor: middle; fill: #ef4444; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -107,11 +127,18 @@
 <div class="card">
     <div class="header-bar">
         <h1>🏫 Campus Navigator</h1>
-        <span class="badge">EXTENDED MAP v5.0</span>
+        <span class="badge">PRO WINNER EDITION v6.0</span>
     </div>
 
     <div class="route-builder">
-        <label class="first">Quick Search Landmark:</label>
+        <label class="first">Quick Schedule Presets:</label>
+        <div class="preset-bar">
+            <span class="preset-chip" onclick="loadPreset('morning')">🌅 CS Morning Routine</span>
+            <span class="preset-chip" onclick="loadPreset('sports')">🏀 Evening Sports Plan</span>
+            <span class="preset-chip" onclick="loadPreset('admin')">📑 Student Admin Visit</span>
+        </div>
+
+        <label>Search Landmark:</label>
         <input type="text" id="quick-search" placeholder="Type location (e.g. Auditorium, Pool, Boys Hostel)..." oninput="filterLocations(this.value)">
 
         <label>Start Point:</label>
@@ -156,11 +183,16 @@
             </select>
         </div>
 
-        <label>Travel Mode:</label>
+        <label>Travel Mode & Weather Conditions:</label>
         <div class="mode-selector">
             <button type="button" class="mode-btn active" onclick="setMode(this, 'walk')">🚶 Walking</button>
             <button type="button" class="mode-btn" onclick="setMode(this, 'cycle')">🚴 Bicycle</button>
             <button type="button" class="mode-btn" onclick="setMode(this, 'accessible')">♿ Accessible</button>
+        </div>
+        <div class="condition-selector">
+            <button type="button" class="cond-btn active" onclick="setCondition(this, 'normal')">☀️ Clear Day</button>
+            <button type="button" class="cond-btn" onclick="setCondition(this, 'rush')">👥 Rush Hour (+25%)</button>
+            <button type="button" class="cond-btn" onclick="setCondition(this, 'rain')">🌧️ Rain Weather (+35%)</button>
         </div>
 
         <label>Nearby Amenities Layer:</label>
@@ -173,46 +205,76 @@
     </div>
 
     <div class="action-row">
-        <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find My Route</button>
+        <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find Smart Route</button>
         <button type="button" class="btn-share" onclick="copyRouteLink()">Share Link</button>
     </div>
 
     <div id="result" class="result">
-        <h3>Route Details</h3>
-        <p><strong>Path:</strong> <span id="route-path"></span></p>
-        <p><strong>Total Distance:</strong> <span id="dist"></span> meters</p>
-        <p><strong>Est. Travel Time:</strong> <span id="time"></span> mins (<span id="mode-text">walking</span>)</p>
-        <p><strong>Directions:</strong> <span id="directions"></span></p>
+        <h3 style="color: var(--primary);">Route Analytics & Navigation Dashboard</h3>
+        
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="lbl">Total Distance</div>
+                <div class="val" id="dist-val">0 m</div>
+            </div>
+            <div class="metric-card">
+                <div class="lbl">Dynamic ETA</div>
+                <div class="val" id="time-val">0 min</div>
+            </div>
+            <div class="metric-card">
+                <div class="lbl">Estimated Steps</div>
+                <div class="val" id="steps-val">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="lbl">Calories Burned</div>
+                <div class="val" id="cal-val">0 kcal</div>
+            </div>
+            <div class="metric-card">
+                <div class="lbl">CO₂ Saved</div>
+                <div class="val" id="co2-val">0 g</div>
+            </div>
+        </div>
+
+        <div class="directions-box">
+            <h4>Turn-by-Turn Stepper Instructions</h4>
+            <ol class="directions-list" id="turn-instructions"></ol>
+        </div>
+
+        <div class="qr-section">
+            <img id="qr-code-img" src="" alt="Route QR Code">
+            <div>
+                <strong style="color: var(--text); font-size: 13px; display: block;">Mobile Sync Active</strong>
+                <span style="color: var(--text-muted); font-size: 12px;">Scan this QR code with your phone camera to take this turn-by-turn navigation on the go.</span>
+            </div>
+        </div>
     </div>
 
     <div id="map-area">
         <div class="map-header">
-            <h4 style="font-size: 15px; font-weight: 700;">Complete Campus Map & Facilities</h4>
-            <span style="font-size: 12px; color: var(--text-muted);">Strict Road Network Navigation</span>
+            <div>
+                <h4 style="font-size: 15px; font-weight: 700;">Interactive Vector Campus Map</h4>
+                <span style="font-size: 12px; color: var(--text-muted);">💡 Click any road pathway segment to place dynamic blockage / construction rerouting!</span>
+            </div>
         </div>
         <div class="map-container">
             <svg id="campus-svg" viewBox="0 0 800 520">
                 <!-- 1. LANDSCAPING & GROUNDS -->
                 <rect class="svg-grass" width="800" height="520" />
-                
                 <rect class="svg-grass-patch" x="15" y="15" width="360" height="230" />
                 <rect class="svg-grass-patch" x="425" y="15" width="360" height="230" />
                 <rect class="svg-grass-patch" x="15" y="275" width="360" height="230" />
                 <rect class="svg-grass-patch" x="425" y="275" width="360" height="230" />
 
-                <!-- Athletic Play Grounds & Swimming Pool -->
+                <!-- Play Grounds & Pool -->
                 <rect class="svg-sports-ground" x="450" y="320" width="130" height="90" />
                 <ellipse cx="515" cy="365" rx="25" ry="15" fill="none" stroke="#10b981" stroke-width="1.5" />
                 <line x1="515" y1="320" x2="515" y2="410" stroke="#10b981" stroke-width="1.5" />
                 <text x="515" y="370" font-size="9" font-weight="bold" fill="#10b981" text-anchor="middle">PLAY GROUND</text>
 
                 <rect class="svg-pool" x="610" y="330" width="60" height="70" />
-                <line x1="610" y1="345" x2="670" y2="345" stroke="#ffffff" stroke-width="1" opacity="0.5" />
-                <line x1="610" y1="360" x2="670" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.5" />
-                <line x1="610" y1="375" x2="670" y2="375" stroke="#ffffff" stroke-width="1" opacity="0.5" />
                 <text x="640" y="368" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">POOL CLUB</text>
 
-                <!-- Environmental Details -->
+                <!-- Ponds & Parking -->
                 <ellipse class="svg-water" cx="240" cy="180" rx="30" ry="18" />
                 <rect class="svg-parking" x="25" y="380" width="45" height="35" />
                 <text x="47" y="402" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle">P</text>
@@ -220,17 +282,46 @@
                 <g class="tree-icon">
                     <circle cx="35" cy="40" r="7"/><circle cx="50" cy="45" r="6"/><circle cx="340" cy="40" r="7"/>
                     <circle cx="340" cy="180" r="8"/><circle cx="450" cy="180" r="7"/><circle cx="750" cy="180" r="8"/>
-                    <circle cx="35" cy="300" r="7"/><circle cx="340" cy="310" r="8"/><circle cx="750" cy="310" r="8"/>
                 </g>
 
-                <!-- 2. STRICT ROAD GRAPH NETWORK -->
+                <!-- 2. INTERACTIVE ROAD GRAPH PATHS -->
                 <g id="roads-layer">
                     <path class="svg-road-curb" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
-                    <path class="svg-road-surface" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
+                    
+                    <!-- Clickable Segments -->
+                    <path class="svg-road-surface" id="edge-J_GATE-J_SOUTH_W" d="M 80 480 L 80 440" onclick="toggleRoadBlock('J_GATE', 'J_SOUTH_W')" />
+                    <path class="svg-road-surface" id="edge-J_SOUTH_W-J_STATIONARY" d="M 80 440 L 175 440" onclick="toggleRoadBlock('J_SOUTH_W', 'J_STATIONARY')" />
+                    <path class="svg-road-surface" id="edge-J_STATIONARY-J_CANTEEN" d="M 175 440 L 305 440" onclick="toggleRoadBlock('J_STATIONARY', 'J_CANTEEN')" />
+                    <path class="svg-road-surface" id="edge-J_CANTEEN-J_SOUTH_C" d="M 305 440 L 400 440" onclick="toggleRoadBlock('J_CANTEEN', 'J_SOUTH_C')" />
+                    <path class="svg-road-surface" id="edge-J_SOUTH_C-J_GROUND" d="M 400 440 L 515 440" onclick="toggleRoadBlock('J_SOUTH_C', 'J_GROUND')" />
+                    <path class="svg-road-surface" id="edge-J_GROUND-J_POOL" d="M 515 440 L 640 440" onclick="toggleRoadBlock('J_GROUND', 'J_POOL')" />
+                    <path class="svg-road-surface" id="edge-J_POOL-J_SOUTH_E" d="M 640 440 L 720 440" onclick="toggleRoadBlock('J_POOL', 'J_SOUTH_E')" />
+                    
+                    <path class="svg-road-surface" id="edge-J_SOUTH_W-J_MID_W" d="M 80 440 L 80 260" onclick="toggleRoadBlock('J_SOUTH_W', 'J_MID_W')" />
+                    <path class="svg-road-surface" id="edge-J_MID_W-J_BHOSTEL" d="M 80 260 L 170 260" onclick="toggleRoadBlock('J_MID_W', 'J_BHOSTEL')" />
+                    <path class="svg-road-surface" id="edge-J_BHOSTEL-J_GHOSTEL" d="M 170 260 L 290 260" onclick="toggleRoadBlock('J_BHOSTEL', 'J_GHOSTEL')" />
+                    <path class="svg-road-surface" id="edge-J_GHOSTEL-J_MID_C" d="M 290 260 L 400 260" onclick="toggleRoadBlock('J_GHOSTEL', 'J_MID_C')" />
+                    <path class="svg-road-surface" id="edge-J_MID_C-J_SPORTS" d="M 400 260 L 510 260" onclick="toggleRoadBlock('J_MID_C', 'J_SPORTS')" />
+                    <path class="svg-road-surface" id="edge-J_SPORTS-J_MID_E" d="M 510 260 L 720 260" onclick="toggleRoadBlock('J_SPORTS', 'J_MID_E')" />
+                    
+                    <path class="svg-road-surface" id="edge-J_MID_W-J_LIB_NODE" d="M 80 260 L 80 125" onclick="toggleRoadBlock('J_MID_W', 'J_LIB_NODE')" />
+                    <path class="svg-road-surface" id="edge-J_LIB_NODE-J_NORTH_W" d="M 80 125 L 80 80" onclick="toggleRoadBlock('J_LIB_NODE', 'J_NORTH_W')" />
+                    <path class="svg-road-surface" id="edge-J_NORTH_W-J_MAIN_BLDG" d="M 80 80 L 180 80" onclick="toggleRoadBlock('J_NORTH_W', 'J_MAIN_BLDG')" />
+                    <path class="svg-road-surface" id="edge-J_MAIN_BLDG-J_AUDI" d="M 180 80 L 315 80" onclick="toggleRoadBlock('J_MAIN_BLDG', 'J_AUDI')" />
+                    <path class="svg-road-surface" id="edge-J_AUDI-J_NORTH_C" d="M 315 80 L 400 80" onclick="toggleRoadBlock('J_AUDI', 'J_NORTH_C')" />
+                    <path class="svg-road-surface" id="edge-J_NORTH_C-J_CS" d="M 400 80 L 495 80" onclick="toggleRoadBlock('J_NORTH_C', 'J_CS')" />
+                    <path class="svg-road-surface" id="edge-J_CS-J_EC" d="M 495 80 L 635 80" onclick="toggleRoadBlock('J_CS', 'J_EC')" />
+                    <path class="svg-road-surface" id="edge-J_EC-J_NORTH_E" d="M 635 80 L 720 80" onclick="toggleRoadBlock('J_EC', 'J_NORTH_E')" />
+
+                    <path class="svg-road-surface" id="edge-J_NORTH_C-J_MID_C" d="M 400 80 L 400 260" onclick="toggleRoadBlock('J_NORTH_C', 'J_MID_C')" />
+                    <path class="svg-road-surface" id="edge-J_MID_C-J_SOUTH_C" d="M 400 260 L 400 440" onclick="toggleRoadBlock('J_MID_C', 'J_SOUTH_C')" />
+                    <path class="svg-road-surface" id="edge-J_NORTH_E-J_MID_E" d="M 720 80 L 720 260" onclick="toggleRoadBlock('J_NORTH_E', 'J_MID_E')" />
+                    <path class="svg-road-surface" id="edge-J_MID_E-J_SOUTH_E" d="M 720 260 L 720 440" onclick="toggleRoadBlock('J_MID_E', 'J_SOUTH_E')" />
+
                     <path class="svg-road-marking" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
                 </g>
 
-                <!-- 3. BUILDINGS LAYER -->
+                <!-- 3. BUILDINGS LAYER WITH CROWD BADGES -->
                 <g id="buildings-layer">
                     <!-- Main Gate Station -->
                     <g class="bldg-group">
@@ -258,7 +349,8 @@
                     <g class="bldg-group">
                         <rect class="bldg-side" x="120" y="115" width="110" height="35" rx="4"/>
                         <rect class="bldg-top" x="120" y="108" width="110" height="35" />
-                        <text class="bldg-label" x="175" y="130">Central Library</text>
+                        <text class="crowd-indicator" x="175" y="122" fill="#10b981">🟢 LOW CROWD (15%)</text>
+                        <text class="bldg-label" x="175" y="136">Central Library</text>
                     </g>
 
                     <!-- CS Dept (Block A) -->
@@ -277,32 +369,29 @@
                         <text class="bldg-label" x="635" y="50">EC Department</text>
                     </g>
 
-                    <!-- Boys Hostel -->
+                    <!-- Hostels -->
                     <g class="bldg-group">
                         <rect class="bldg-side" x="120" y="285" width="100" height="35" rx="4"/>
                         <rect class="bldg-top" x="120" y="278" width="100" height="35" />
                         <text class="bldg-label" x="170" y="300">Boys Hostel</text>
                     </g>
-
-                    <!-- Girls Hostel -->
                     <g class="bldg-group">
                         <rect class="bldg-side" x="240" y="285" width="100" height="35" rx="4"/>
                         <rect class="bldg-top" x="240" y="278" width="100" height="35" />
                         <text class="bldg-label" x="290" y="300">Girls Hostel</text>
                     </g>
 
-                    <!-- Stationary & Printing Shop -->
+                    <!-- Stationary & Canteen -->
                     <g class="bldg-group">
                         <rect class="bldg-side" x="120" y="375" width="110" height="30" rx="4"/>
                         <rect class="bldg-top" x="120" y="368" width="110" height="30" />
                         <text class="bldg-label" x="175" y="387">Stationary Shop</text>
                     </g>
-
-                    <!-- Campus Canteen -->
                     <g class="bldg-group">
                         <rect class="bldg-side" x="250" y="375" width="110" height="30" rx="4"/>
                         <rect class="bldg-top" x="250" y="368" width="110" height="30" />
-                        <text class="bldg-label" x="305" y="387">Campus Canteen</text>
+                        <text class="crowd-indicator" x="305" y="380" fill="#ef4444">🔴 BUSY (88%)</text>
+                        <text class="bldg-label" x="305" y="392">Campus Canteen</text>
                     </g>
 
                     <!-- Sports Complex -->
@@ -316,6 +405,7 @@
                 <!-- 4. ACTIVE ROUTE & MARKERS -->
                 <path id="active-road-path" class="active-road-path" d="" />
                 <circle id="animated-traveler" class="animated-traveler" cx="-20" cy="-20" />
+                <g id="obstacles-layer"></g>
                 <g id="amenities-layer"></g>
                 <g id="markers-layer"></g>
             </svg>
@@ -325,7 +415,9 @@
 
 <script>
     let currentMode = 'walk';
+    let currentCondition = 'normal';
     let activeAmenities = new Set();
+    let blockedEdges = new Set();
     let animationTimer = null;
 
     const landmarks = {
@@ -334,6 +426,17 @@
         "Boys Hostel": "J_BHOSTEL", "Girls Hostel": "J_GHOSTEL", 
         "Stationary": "J_STATIONARY", "Canteen": "J_CANTEEN", 
         "Sports Complex": "J_SPORTS", "Pool Club": "J_POOL", "Play Ground": "J_GROUND"
+    };
+
+    const nodeNames = {
+        "J_GATE": "Main Gate", "J_MAIN_BLDG": "Main Administrative Building", "J_AUDI": "Auditorium",
+        "J_LIB": "Central Library", "J_CS": "CS Department", "J_EC": "EC Department",
+        "J_BHOSTEL": "Boys Hostel", "J_GHOSTEL": "Girls Hostel", "J_STATIONARY": "Stationary Shop",
+        "J_CANTEEN": "Campus Canteen", "J_SPORTS": "Sports Complex", "J_POOL": "Pool Club",
+        "J_GROUND": "Play Grounds", "J_SOUTH_W": "South-West Junction", "J_MID_W": "Mid-West Junction",
+        "J_LIB_NODE": "Library Junction", "J_NORTH_W": "North-West Corner", "J_NORTH_C": "North Central Junction",
+        "J_NORTH_E": "North-East Corner", "J_MID_C": "Central Quad", "J_MID_E": "Mid-East Junction",
+        "J_SOUTH_C": "South Central Junction", "J_SOUTH_E": "South-East Corner"
     };
 
     const nodes = {
@@ -378,6 +481,154 @@
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentMode = mode;
+        if (document.getElementById('result').style.display === 'block') calculateMultiStopRoute();
+    }
+
+    function setCondition(btn, cond) {
+        document.querySelectorAll('.cond-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCondition = cond;
+        if (document.getElementById('result').style.display === 'block') calculateMultiStopRoute();
+    }
+
+    function loadPreset(type) {
+        const container = document.getElementById("additional-stops");
+        container.innerHTML = "";
+        const selects = document.querySelectorAll(".location-select");
+
+        if (type === 'morning') {
+            selects[0].value = "Main Gate";
+            addStop(); container.children[0].querySelector('select').value = "CS Dept";
+            addStop(); container.children[1].querySelector('select').value = "Canteen";
+            selects[1].value = "Library";
+        } else if (type === 'sports') {
+            selects[0].value = "Boys Hostel";
+            addStop(); container.children[0].querySelector('select').value = "Sports Complex";
+            selects[1].value = "Pool Club";
+        } else if (type === 'admin') {
+            selects[0].value = "Main Gate";
+            addStop(); container.children[0].querySelector('select').value = "Main Building";
+            selects[1].value = "Auditorium";
+        }
+        calculateMultiStopRoute();
+    }
+
+    function toggleRoadBlock(u, v) {
+        const edgeKey1 = `${u}-${v}`, edgeKey2 = `${v}-${u}`;
+        const el1 = document.getElementById(`edge-${edgeKey1}`), el2 = document.getElementById(`edge-${edgeKey2}`);
+        const el = el1 || el2;
+
+        if (blockedEdges.has(edgeKey1) || blockedEdges.has(edgeKey2)) {
+            blockedEdges.delete(edgeKey1); blockedEdges.delete(edgeKey2);
+            if (el) el.classList.remove('road-blocked');
+        } else {
+            blockedEdges.add(edgeKey1); blockedEdges.add(edgeKey2);
+            if (el) el.classList.add('road-blocked');
+        }
+        renderObstacles();
+        if (document.getElementById('result').style.display === 'block') calculateMultiStopRoute();
+    }
+
+    function renderObstacles() {
+        let html = '';
+        blockedEdges.forEach(key => {
+            const [u, v] = key.split('-');
+            if (nodes[u] && nodes[v]) {
+                const midX = (nodes[u].x + nodes[v].x) / 2;
+                const midY = (nodes[u].y + nodes[v].y) / 2;
+                html += `<text class="obstacle-icon" x="${midX}" y="${midY + 5}">🚧</text>`;
+            }
+        });
+        document.getElementById('obstacles-layer').innerHTML = html;
+    }
+
+    function findRoadPath(start, end) {
+        if (start === end) return [start];
+        const queue = [[start]], visited = new Set([start]);
+
+        while (queue.length > 0) {
+            const path = queue.shift(), curr = path[path.length - 1];
+            for (const neighbor of (roadGraph[curr] || [])) {
+                if (blockedEdges.has(`${curr}-${neighbor}`) || blockedEdges.has(`${neighbor}-${curr}`)) continue;
+                if (neighbor === end) return [...path, neighbor];
+                if (!visited.has(neighbor)) { visited.add(neighbor); queue.push([...path, neighbor]); }
+            }
+        }
+        return [start, end];
+    }
+
+    function calculateMultiStopRoute() {
+        const selects = document.querySelectorAll(".location-select");
+        const stops = Array.from(selects).map(s => s.value);
+
+        if (new Set(stops).size !== stops.length) {
+            alert("Please select distinct stops along your route."); return;
+        }
+
+        let fullWaypoints = [], totalDist = 0;
+        for (let i = 0; i < stops.length - 1; i++) {
+            const legPath = findRoadPath(landmarks[stops[i]], landmarks[stops[i+1]]);
+            if (i > 0) legPath.shift();
+            fullWaypoints.push(...legPath);
+            totalDist += (legPath.length - 1) * 110;
+        }
+
+        let pathD = "";
+        fullWaypoints.forEach((key, idx) => {
+            const pt = nodes[key];
+            pathD += (idx === 0) ? `M ${pt.x} ${pt.y}` : ` L ${pt.x} ${pt.y}`;
+        });
+
+        // Speed & ETA Factor
+        let speedFactor = currentMode === 'cycle' ? 220 : currentMode === 'accessible' ? 45 : 60;
+        if (currentCondition === 'rush') speedFactor *= 0.75;
+        if (currentCondition === 'rain') speedFactor *= 0.65;
+
+        const estTime = Math.ceil(totalDist / speedFactor);
+        const steps = Math.round(totalDist / 0.75);
+        const calories = Math.round(steps * 0.04);
+        const co2Saved = Math.round(totalDist * 0.12);
+
+        // Turn-by-Turn Generation
+        const instructionsList = document.getElementById("turn-instructions");
+        instructionsList.innerHTML = "";
+        for (let i = 0; i < fullWaypoints.length - 1; i++) {
+            const from = nodeNames[fullWaypoints[i]] || fullWaypoints[i];
+            const to = nodeNames[fullWaypoints[i+1]] || fullWaypoints[i+1];
+            const li = document.createElement("li");
+            li.innerHTML = `Head toward <strong>${to}</strong> from ${from} (approx. 110m).`;
+            instructionsList.appendChild(li);
+        }
+
+        // QR Code Generation
+        const routeText = encodeURIComponent(`Campus Route: ${stops.join(" -> ")} | Dist: ${totalDist}m`);
+        document.getElementById("qr-code-img").src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${routeText}`;
+
+        // Populate Dashboard
+        document.getElementById("dist-val").innerText = `${totalDist} m`;
+        document.getElementById("time-val").innerText = `${estTime} min`;
+        document.getElementById("steps-val").innerText = steps.toLocaleString();
+        document.getElementById("cal-val").innerText = `${calories} kcal`;
+        document.getElementById("co2-val").innerText = `${co2Saved} g`;
+
+        // Render Markers
+        let markersHTML = "";
+        stops.forEach((stop, idx) => {
+            const pt = nodes[landmarks[stop]];
+            markersHTML += `
+                <circle class="stop-glow" cx="${pt.x}" cy="${pt.y}" r="15" />
+                <circle class="stop-pin" cx="${pt.x}" cy="${pt.y}" r="9" />
+                <text class="stop-text" x="${pt.x}" y="${pt.y + 4}">${idx + 1}</text>
+            `;
+        });
+
+        document.getElementById("result").style.display = "block";
+        document.getElementById("map-area").style.display = "block";
+        document.getElementById("active-road-path").setAttribute("d", pathD);
+        document.getElementById("markers-layer").innerHTML = markersHTML;
+        
+        renderAmenities();
+        animateTraveler(fullWaypoints);
     }
 
     function toggleAmenity(chip, type) {
@@ -390,23 +641,16 @@
     function renderAmenities() {
         let html = '';
         if (activeAmenities.has('male_washroom')) {
-            html += `<text class="amenity-icon" x="180" y="100">🚹</text>
-                     <text class="amenity-icon" x="495" y="100">🚹</text>
-                     <text class="amenity-icon" x="170" y="320">🚹</text>`;
+            html += `<text class="amenity-icon" x="180" y="100">🚹</text><text class="amenity-icon" x="495" y="100">🚹</text><text class="amenity-icon" x="170" y="320">🚹</text>`;
         }
         if (activeAmenities.has('female_washroom')) {
-            html += `<text class="amenity-icon" x="315" y="100">🚺</text>
-                     <text class="amenity-icon" x="635" y="100">🚺</text>
-                     <text class="amenity-icon" x="290" y="320">🚺</text>`;
+            html += `<text class="amenity-icon" x="315" y="100">🚺</text><text class="amenity-icon" x="635" y="100">🚺</text><text class="amenity-icon" x="290" y="320">🚺</text>`;
         }
         if (activeAmenities.has('water')) {
-            html += `<text class="amenity-icon" x="175" y="150">🚰</text>
-                     <text class="amenity-icon" x="305" y="415">🚰</text>
-                     <text class="amenity-icon" x="510" y="310">🚰</text>`;
+            html += `<text class="amenity-icon" x="175" y="150">🚰</text><text class="amenity-icon" x="305" y="415">🚰</text><text class="amenity-icon" x="510" y="310">🚰</text>`;
         }
         if (activeAmenities.has('ramps')) {
-            html += `<text class="amenity-icon" x="80" y="460">♿</text>
-                     <text class="amenity-icon" x="400" y="280">♿</text>`;
+            html += `<text class="amenity-icon" x="80" y="460">♿</text><text class="amenity-icon" x="400" y="280">♿</text>`;
         }
         document.getElementById('amenities-layer').innerHTML = html;
     }
@@ -424,19 +668,6 @@
     function copyRouteLink() {
         navigator.clipboard.writeText(window.location.href);
         alert("Route link copied to clipboard!");
-    }
-
-    function findRoadPath(start, end) {
-        if (start === end) return [start];
-        const queue = [[start]], visited = new Set([start]);
-        while (queue.length > 0) {
-            const path = queue.shift(), curr = path[path.length - 1];
-            for (const neighbor of (roadGraph[curr] || [])) {
-                if (neighbor === end) return [...path, neighbor];
-                if (!visited.has(neighbor)) { visited.add(neighbor); queue.push([...path, neighbor]); }
-            }
-        }
-        return [start, end];
     }
 
     function addStop() {
@@ -472,56 +703,6 @@
             traveler.setAttribute("cy", pt.y);
             currentIdx++;
         }, 380);
-    }
-
-    function calculateMultiStopRoute() {
-        const selects = document.querySelectorAll(".location-select");
-        const stops = Array.from(selects).map(s => s.value);
-
-        if (new Set(stops).size !== stops.length) {
-            alert("Please ensure all stops in your route are unique."); return;
-        }
-
-        let fullWaypoints = [], totalDist = 0;
-        for (let i = 0; i < stops.length - 1; i++) {
-            const legPath = findRoadPath(landmarks[stops[i]], landmarks[stops[i+1]]);
-            if (i > 0) legPath.shift();
-            fullWaypoints.push(...legPath);
-            totalDist += (legPath.length - 1) * 110;
-        }
-
-        let pathD = "";
-        fullWaypoints.forEach((key, idx) => {
-            const pt = nodes[key];
-            pathD += (idx === 0) ? `M ${pt.x} ${pt.y}` : ` L ${pt.x} ${pt.y}`;
-        });
-
-        let markersHTML = "";
-        stops.forEach((stop, idx) => {
-            const pt = nodes[landmarks[stop]];
-            markersHTML += `
-                <circle class="stop-glow" cx="${pt.x}" cy="${pt.y}" r="15" />
-                <circle class="stop-pin" cx="${pt.x}" cy="${pt.y}" r="9" />
-                <text class="stop-text" x="${pt.x}" y="${pt.y + 4}">${idx + 1}</text>
-            `;
-        });
-
-        const speedFactor = currentMode === 'cycle' ? 220 : currentMode === 'accessible' ? 45 : 60;
-        const estTime = Math.ceil(totalDist / speedFactor);
-
-        document.getElementById("route-path").innerText = stops.join(" → ");
-        document.getElementById("dist").innerText = totalDist;
-        document.getElementById("time").innerText = estTime;
-        document.getElementById("mode-text").innerText = currentMode;
-        document.getElementById("directions").innerText = `Follow campus avenues strictly along road network: ${stops.join(" via ")}.`;
-
-        document.getElementById("result").style.display = "block";
-        document.getElementById("map-area").style.display = "block";
-        document.getElementById("active-road-path").setAttribute("d", pathD);
-        document.getElementById("markers-layer").innerHTML = markersHTML;
-        
-        renderAmenities();
-        animateTraveler(fullWaypoints);
     }
 </script>
 
