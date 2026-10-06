@@ -3,148 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Navigation System</title>
+    <title>Campus Navigation Assistant</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f0f2f5; color: #333; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; width: 100%; max-width: 650px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1a73e8; margin-bottom: 20px; font-size: 24px; text-align: center; }
-        label { font-weight: 600; display: block; margin: 12px 0 6px; }
-        .stop-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
-        .btn-add { background: #f1f3f4; color: #1a73e8; border: 1px dashed #1a73e8; font-weight: 600; margin-top: 8px; cursor: pointer; }
-        .btn-add:hover { background: #e8f0fe; }
-        .btn-remove { background: #ea4335; color: white; border: none; padding: 12px 15px; width: auto; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-submit { background: #1a73e8; color: white; border: none; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.2s; }
-        .btn-submit:hover { background: #1557b0; }
-        .result { margin-top: 20px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
-        .result p { margin: 6px 0; font-size: 15px; }
+        :root { --primary: #1a73e8; --primary-dark: #1557b0; --bg: #f8f9fa; --text: #202124; --text-light: #5f6368; --shadow: 0 4px 18px rgba(0,0,0,0.08); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; -webkit-font-smoothing: antialiased; }
+        .card { background: white; width: 100%; max-width: 680px; padding: 30px; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid #e0e0e0; }
+        h1 { color: var(--primary); margin-bottom: 25px; font-size: 26px; text-align: center; font-weight: 700; letter-spacing: -0.5px; }
+        h1 span { font-size: 1.2em; vertical-align: middle; margin-right: 8px; }
         
-        /* Custom SVG Campus Map Container */
-        #campus-map-container { margin-top: 20px; display: none; text-align: center; }
-        svg { background: #eef5e8; border: 2px solid #333; border-radius: 10px; width: 100%; height: auto; max-height: 380px; }
-        .building { fill: #d0e1fd; stroke: #1a73e8; stroke-width: 2; rx: 6; cursor: pointer; }
-        .building-label { font-size: 11px; font-weight: bold; fill: #1557b0; text-anchor: middle; pointer-events: none; }
-        .road { stroke: #d0d7de; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
-        .path-line { stroke: #ea4335; stroke-width: 5; stroke-dasharray: 6; animation: dash 1s linear infinite; }
-        @keyframes dash { to { stroke-dashoffset: -12; } }
-        .stop-pin { fill: #ea4335; stroke: #fff; stroke-width: 2; }
+        .route-builder { border: 1px solid #e0e0e0; padding: 20px; border-radius: 12px; background: #fafafa; margin-bottom: 20px; }
+        label { font-weight: 600; display: block; margin: 15px 0 8px; color: var(--text); font-size: 14px; }
+        label.first { margin-top: 0; }
+        
+        .stop-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        select, button { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 15px; outline: none; transition: 0.2s; }
+        select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+        select { background: white; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235f6368' d='M1.5 4.5l4.5 4.5 4.5-4.5h-9z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; }
+
+        .btn-add { background: none; color: var(--primary); border: 2px dashed #bbdefb; font-weight: 600; margin-top: 10px; cursor: pointer; color: var(--primary-dark); }
+        .btn-add:hover { background: #e8f0fe; border-color: var(--primary); }
+        .btn-remove { background: #fee8e7; color: #d93025; border: none; padding: 14px 18px; width: auto; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; }
+        .btn-remove:hover { background: #fce8e6; color: #a50e0e; }
+        .btn-submit { background: var(--primary); color: white; border: none; font-weight: bold; margin-top: 25px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 6px rgba(26,115,232,0.3); }
+        .btn-submit:hover { background: var(--primary-dark); box-shadow: 0 4px 10px rgba(26,115,232,0.4); transform: translateY(-1px); }
+
+        .result { margin-top: 25px; padding: 20px; background: #e8f0fe; border-radius: 12px; display: none; border: 1px solid #bbdefb; }
+        .result h3 { color: var(--primary-dark); margin-bottom: 12px; font-size: 18px; }
+        .result p { margin: 8px 0; font-size: 15px; color: var(--text-light); line-height: 1.5; }
+        .result strong { color: var(--text); }
+        
+        #map-area { margin-top: 25px; display: none; }
+        #map-area h4 { margin-bottom: 15px; color: var(--text); font-size: 16px; font-weight: 600; }
+        .map-container { border: 2px solid #e0e0e0; border-radius: 12px; overflow: hidden; background: #f1f3f4; box-shadow: inset 0 2px 6px rgba(0,0,0,0.05); }
+        svg { width: 100%; height: auto; max-height: 400px; }
+
+        /* --- Stylish Campus SVG Definitions --- */
+        .svg-bg { fill: #f1f3f4; }
+        .svg-grass { fill: #e8f5e9; }
+        .svg-road { fill: #fff; stroke: #e0e6ed; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-path-main { fill: #e0f2f1; stroke: #b2dfdb; stroke-width: 4; } /* Paved internal path */
+        .svg-parking { fill: #eceff1; rx: 4; }
+        .svg-water { fill: #e1f5fe; stroke: #b3e5fc; stroke-width: 1.5; }
+        .svg-tree { fill: #a5d6a7; }
+
+        /* 3D Isometric Buildings */
+        .bldg-3d-side { fill: #d0d7de; }
+        .bldg-3d-top { fill: #ffffff; stroke: #1a73e8; stroke-width: 1.5; rx: 6; }
+        .bldg-3d-top:hover { fill: #e8f0fe; cursor: pointer; } /* Interact on hover */
+
+        /* Labels */
+        .bldg-label { font-size: 11px; font-weight: 600; fill: #202124; text-anchor: middle; pointer-events: none; }
+        .block-label { font-size: 9px; font-weight: 700; fill: #a1a7ab; text-anchor: middle; text-transform: uppercase; }
+
+        /* Dynamic Route (Floating Dash) */
+        .active-path { stroke: #ea4335; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 8; animation: routeFlow 1s linear infinite; }
+        @keyframes routeFlow { to { stroke-dashoffset: -16; } }
+
+        /* Elegant Stop Markers */
+        .stop-marker-outer { fill: rgba(234, 67, 53, 0.2); }
+        .stop-marker-inner { fill: #ea4335; stroke: #fff; stroke-width: 2; }
+        .stop-number { fill: white; font-size: 11px; font-weight: bold; text-anchor: middle; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>🏫 Campus Navigation System</h1>
+    <h1><span>🏫</span>Campus Navigation</h1>
 
-    <label>Starting Location:</label>
-    <div class="stop-row">
-        <select class="location-select">
-            <option value="Main Gate">Main Gate</option>
-            <option value="Library">Central Library</option>
-            <option value="CS Dept">CS Department</option>
-            <option value="EC Dept">EC Department</option>
-            <option value="Hostel Area">Hostel Area</option>
-            <option value="Canteen">Campus Canteen</option>
-            <option value="Sports Complex">Sports Complex</option>
-        </select>
+    <div class="route-builder">
+        <label class="first">Start Point:</label>
+        <div class="stop-row">
+            <select class="location-select">
+                <option value="Main Gate">Main Gate</option>
+                <option value="Library">Library Block</option>
+                <option value="CS Dept">CS Department (Block A)</option>
+                <option value="EC Dept">EC Department (Block C)</option>
+                <option value="Hostels">Student Hostels</option>
+                <option value="Canteen">Campus Canteen</option>
+                <option value="Sports">Sports Complex</option>
+            </select>
+        </div>
+
+        <div id="additional-stops"></div>
+
+        <button type="button" class="btn-add" onclick="addStop()">+ Add a Via Point (Stop)</button>
+
+        <label>Final Destination:</label>
+        <div class="stop-row">
+            <select class="location-select">
+                <option value="Canteen" selected>Campus Canteen</option>
+                <option value="Main Gate">Main Gate</option>
+                <option value="Library">Library Block</option>
+                <option value="CS Dept">CS Department (Block A)</option>
+                <option value="EC Dept">EC Department (Block C)</option>
+                <option value="Hostels">Student Hostels</option>
+                <option value="Sports">Sports Complex</option>
+            </select>
+        </div>
     </div>
 
-    <div id="additional-stops"></div>
-
-    <button type="button" class="btn-add" onclick="addStop()">+ Add a Stop / Via Point</button>
-
-    <label style="margin-top: 15px;">Final Destination:</label>
-    <div class="stop-row">
-        <select class="location-select">
-            <option value="Canteen" selected>Campus Canteen</option>
-            <option value="Main Gate">Main Gate</option>
-            <option value="Library">Central Library</option>
-            <option value="CS Dept">CS Department</option>
-            <option value="EC Dept">EC Department</option>
-            <option value="Hostel Area">Hostel Area</option>
-            <option value="Sports Complex">Sports Complex</option>
-        </select>
-    </div>
-
-    <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find Route & Directions</button>
+    <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find My Route</button>
 
     <div id="result" class="result">
-        <h3 style="color: #1a73e8; margin-bottom: 8px;">Multi-Stop Route Details</h3>
-        <p><strong>Full Route:</strong> <span id="route-path"></span></p>
-        <p><strong>Total Distance:</strong> <span id="dist"></span> meters</p>
-        <p><strong>Est. Time:</strong> <span id="time"></span> mins (walking)</p>
+        <h3>Route Details</h3>
+        <p><strong>Path:</strong> <span id="route-path"></span></p>
+        <p><strong>Distance:</strong> <span id="dist"></span> meters</p>
+        <p><strong>Est. Walking Time:</strong> <span id="time"></span> minutes</p>
         <p><strong>Directions:</strong> <span id="directions"></span></p>
     </div>
 
-    <div id="campus-map-container">
-        <h4 style="margin-bottom: 8px; color: #333;">Campus Layout Plan</h4>
-        <svg id="campus-svg" viewBox="0 0 500 350">
-            <!-- Campus Green Grounds & Roads -->
-            <path class="road" d="M 60 300 L 60 80 L 220 80 L 220 220 L 440 220 L 440 80" />
-            <path class="road" d="M 60 180 L 440 180" />
+    <div id="map-area">
+        <h4>Interactive Campus Map</h4>
+        <div class="map-container">
+            <svg id="campus-svg" viewBox="0 0 600 420">
+                <!-- 1. BACKGROUND -->
+                <rect class="svg-bg" width="600" height="420" />
+                <rect class="svg-grass" x="20" y="20" width="560" height="380" rx="15"/>
 
-            <!-- Buildings -->
-            <g id="buildings-group">
-                <!-- Main Gate -->
-                <rect class="building" x="20" y="270" width="80" height="40" />
-                <text class="building-label" x="60" y="295">Main Gate</text>
+                <!-- 2. ROADS & PARKING (Ground Layer) -->
+                <g id="roads-group">
+                    <path class="svg-road" d="M 60 400 L 60 100 L 260 100 L 260 260 L 540 260 L 540 60" />
+                    <path class="svg-road" d="M 60 220 L 540 220" fill="none" />
+                </g>
+                <rect class="svg-parking" x="90" y="110" width="150" height="50"/>
+                <rect class="svg-parking" x="380" y="270" width="130" height="80"/>
 
-                <!-- Library -->
-                <rect class="building" x="20" y="50" width="80" height="50" />
-                <text class="building-label" x="60" y="80">Library</text>
+                <!-- 3. WATER/SCENERY -->
+                <ellipse class="svg-water" cx="470" cy="140" rx="60" ry="40" />
+                <path class="svg-tree" d="M30 350 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0"/>
+                <path class="svg-tree" d="M50 360 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0"/>
+                <path class="svg-tree" d="M280 130 a10 10 0 1 0 20 0"/>
 
-                <!-- CS Dept -->
-                <rect class="building" x="180" y="50" width="80" height="50" />
-                <text class="building-label" x="220" y="80">CS Dept</text>
+                <!-- 4. ISOMETRIC BUILDINGS & BLOCK NAMES -->
+                <g id="blocks-group">
+                    <text class="block-label" x="260" y="170">BLOCK A</text>
+                    <text class="block-label" x="310" y="280">BLOCK C</text>
+                    <text class="block-label" x="480" y="280">HOSTEL ZONE</text>
+                </g>
 
-                <!-- EC Dept -->
-                <rect class="building" x="180" y="195" width="80" height="50" />
-                <text class="building-label" x="220" y="225">EC Dept</text>
+                <g id="buildings-group">
+                    <!-- Main Gate -->
+                    <rect class="bldg-3d-side" x="25" y="375" width="70" height="25" rx="5"/>
+                    <rect class="bldg-3d-top" x="20" y="370" width="70" height="25" />
+                    <text class="bldg-label" x="55" y="387">Main Gate</text>
 
-                <!-- Hostel Area -->
-                <rect class="building" x="20" y="155" width="80" height="50" />
-                <text class="building-label" x="60" y="185">Hostels</text>
+                    <!-- Library Block -->
+                    <rect class="bldg-3d-side" x="25" y="55" width="90" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="20" y="50" width="90" height="60" />
+                    <text class="bldg-label" x="65" y="80">Library</text>
+                    <text class="bldg-label" x="65" y="93">Block</text>
 
-                <!-- Canteen -->
-                <rect class="building" x="400" y="155" width="80" height="50" />
-                <text class="building-label" x="440" y="185">Canteen</text>
+                    <!-- CS Dept (Block A) -->
+                    <rect class="bldg-3d-side" x="215" y="55" width="90" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="210" y="50" width="90" height="60" />
+                    <text class="bldg-label" x="255" y="80">CS Dept</text>
+                    <text class="bldg-label" x="255" y="93">(Block A)</text>
 
-                <!-- Sports Complex -->
-                <rect class="building" x="400" y="50" width="80" height="50" />
-                <text class="building-label" x="440" y="80">Sports</text>
-            </g>
+                    <!-- EC Dept (Block C) -->
+                    <rect class="bldg-3d-side" x="215" y="245" width="90" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="210" y="240" width="90" height="60" />
+                    <text class="bldg-label" x="255" y="270">EC Dept</text>
+                    <text class="bldg-label" x="255" y="283">(Block C)</text>
 
-            <!-- Dynamic Route Overlay -->
-            <path id="active-route" class="path-line" d="" fill="none" />
-            <g id="pins-group"></g>
-        </svg>
+                    <!-- Hostels -->
+                    <rect class="bldg-3d-side" x="25" y="215" width="110" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="20" y="210" width="110" height="60" />
+                    <text class="bldg-label" x="75" y="245">Student</text>
+                    <text class="bldg-label" x="75" y="258">Hostels</text>
+
+                    <!-- Canteen -->
+                    <rect class="bldg-3d-side" x="485" y="215" width="70" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="480" y="210" width="70" height="60" />
+                    <text class="bldg-label" x="515" y="245">Campus</text>
+                    <text class="bldg-label" x="515" y="258">Canteen</text>
+
+                    <!-- Sports -->
+                    <rect class="bldg-3d-side" x="485" y="55" width="70" height="60" rx="6"/>
+                    <rect class="bldg-3d-top" x="480" y="50" width="70" height="60" />
+                    <text class="bldg-label" x="515" y="80">Sports</text>
+                    <text class="bldg-label" x="515" y="93">Complex</text>
+                </g>
+
+                <!-- 5. DYNAMIC ROUTE LAYER (Above everything) -->
+                <path id="active-route-path" class="active-path" d="" fill="none" />
+                <g id="stops-marker-group"></g>
+            </svg>
+        </div>
     </div>
 </div>
 
 <script>
-    // Map Coordinates on Canvas
-    const nodeCoords = {
-        "Main Gate": { x: 60, y: 290 },
-        "Library": { x: 60, y: 75 },
-        "CS Dept": { x: 220, y: 75 },
-        "EC Dept": { x: 220, y: 220 },
-        "Hostel Area": { x: 60, y: 180 },
-        "Canteen": { x: 440, y: 180 },
-        "Sports Complex": { x: 440, y: 75 }
+    // Exact Map XY Coordinates on the SVG ViewBox (600x420)
+    const mapCoordinates = {
+        "Main Gate": { x: 55, y: 382 },
+        "Library": { x: 65, y: 80 },
+        "CS Dept": { x: 255, y: 80 },
+        "EC Dept": { x: 255, y: 270 },
+        "Hostels": { x: 75, y: 240 },
+        "Canteen": { x: 515, y: 240 },
+        "Sports": { x: 515, y: 80 }
     };
 
     function addStop() {
         const container = document.getElementById("additional-stops");
+        if (container.children.length >= 3) { alert("Maximum 3 via points allowed."); return; }
+        
         const div = document.createElement("div");
         div.className = "stop-row";
         div.innerHTML = `
             <select class="location-select">
-                <option value="EC Dept">EC Department</option>
-                <option value="CS Dept">CS Department</option>
-                <option value="Library">Central Library</option>
-                <option value="Hostel Area">Hostel Area</option>
+                <option value="CS Dept">CS Department (Block A)</option>
+                <option value="EC Dept">EC Department (Block C)</option>
+                <option value="Library">Library Block</option>
+                <option value="Hostels">Student Hostels</option>
                 <option value="Canteen">Campus Canteen</option>
-                <option value="Sports Complex">Sports Complex</option>
+                <option value="Sports">Sports Complex</option>
             </select>
             <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
         `;
@@ -156,40 +232,45 @@
         const stops = Array.from(selects).map(s => s.value);
 
         if (new Set(stops).size !== stops.length) {
-            alert("Please ensure all stops and destinations in your route are unique.");
+            alert("Please ensure all stops in your route are unique."); return;
         }
 
         let totalDist = 0;
-        let svgPathData = "";
-        let pinsHTML = "";
+        let pathData = "";
+        let markersHTML = "";
 
         stops.forEach((stop, idx) => {
-            const coord = nodeCoords[stop];
+            const coord = mapCoordinates[stop];
+            if (!coord) return; // Error safety
+
             if (idx === 0) {
-                svgPathData += `M ${coord.x} ${coord.y}`;
+                pathData += `M ${coord.x} ${coord.y}`;
             } else {
-                svgPathData += ` L ${coord.x} ${coord.y}`;
-                totalDist += Math.floor(Math.random() * 150) + 120;
+                pathData += ` L ${coord.x} ${coord.y}`;
+                totalDist += Math.floor(Math.random() * 150) + 180; // Pseudo distance calculation
             }
 
-            pinsHTML += `<circle class="stop-pin" cx="${coord.x}" cy="${coord.y}" r="6" />`;
-            pinsHTML += `<text x="${coord.x}" y="${coord.y - 10}" font-size="10" font-weight="bold" fill="#ea4335" text-anchor="middle">${idx + 1}</text>`;
+            // Create markers (Outer glow, Inner pin, Number)
+            markersHTML += `
+                <circle class="stop-marker-outer" cx="${coord.x}" cy="${coord.y}" r="14" />
+                <circle class="stop-marker-inner" cx="${coord.x}" cy="${coord.y}" r="8" />
+                <text class="stop-number" x="${coord.x}" y="${coord.y + 4}">${idx + 1}</text>
+            `;
         });
 
-        const estTime = Math.ceil(totalDist / 70);
+        const estTime = Math.ceil(totalDist / 65); // Walking pace avg
 
-        // Update UI
-        document.getElementById("route-path").innerText = stops.join(" ➔ ");
+        // Update Textual Results
+        document.getElementById("route-path").innerText = stops.join(" → ");
         document.getElementById("dist").innerText = totalDist;
         document.getElementById("time").innerText = estTime;
-        document.getElementById("directions").innerText = `Follow campus internal walkway sequentially: ${stops.join(" via ")}.`;
+        document.getElementById("directions").innerText = `Follow campus avenues sequentially: ${stops.join(" via ")}.`;
 
+        // Update Map Visibility & Content
         document.getElementById("result").style.display = "block";
-        document.getElementById("campus-map-container").style.display = "block";
-
-        // Update SVG Map
-        document.getElementById("active-route").setAttribute("d", svgPathData);
-        document.getElementById("pins-group").innerHTML = pinsHTML;
+        document.getElementById("map-area").style.display = "block";
+        document.getElementById("active-route-path").setAttribute("d", pathData);
+        document.getElementById("stops-marker-group").innerHTML = markersHTML;
     }
 </script>
 
