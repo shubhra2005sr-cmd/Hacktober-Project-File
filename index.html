@@ -19,7 +19,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         body { background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 25px 15px; -webkit-font-smoothing: antialiased; }
-        .card { background: var(--card-bg); width: 100%; max-width: 860px; padding: 32px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card { background: var(--card-bg); width: 100%; max-width: 950px; padding: 32px; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         
         .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         h1 { color: var(--primary); font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -63,42 +63,43 @@
         #map-area { margin-top: 25px; display: none; }
         .map-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .map-container { border: 2px solid var(--border); border-radius: 16px; overflow: hidden; background: #080d1a; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        svg { width: 100%; height: auto; max-height: 480px; display: block; }
+        svg { width: 100%; height: auto; max-height: 560px; display: block; }
 
-        /* Highly Detailed Visual Styling */
-        .svg-grass { fill: #0f172a; }
-        .svg-grass-patch { fill: #111e36; rx: 12; }
+        /* Detail Map Layers */
+        .svg-grass { fill: #0a1120; }
+        .svg-grass-patch { fill: #0f1c33; rx: 10; }
         .svg-plaza { fill: #1e293b; rx: 6; }
-        .svg-water { fill: #0284c7; opacity: 0.35; stroke: #38bdf8; stroke-width: 1.5; }
-        .svg-parking { fill: #1e293b; stroke: #334155; stroke-dasharray: 4 4; rx: 4; }
+        .svg-sports-ground { fill: #064e3b; stroke: #10b981; stroke-width: 1.5; rx: 12; }
+        .svg-track { fill: none; stroke: #b91c1c; stroke-width: 8; rx: 20; }
+        .svg-pool { fill: #0284c7; stroke: #38bdf8; stroke-width: 2; rx: 6; }
+        .svg-water { fill: #0369a1; opacity: 0.4; stroke: #38bdf8; stroke-width: 1.5; }
+        .svg-parking { fill: #1e293b; stroke: #334155; stroke-dasharray: 3 3; rx: 4; }
 
-        /* Advanced Road Styling */
-        .svg-road-curb { fill: none; stroke: #1e293b; stroke-width: 28; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-surface { fill: none; stroke: #0f172a; stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
-        .svg-road-marking { fill: none; stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 6 6; stroke-linecap: round; stroke-linejoin: round; }
+        /* Roads */
+        .svg-road-curb { fill: none; stroke: #1e293b; stroke-width: 26; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-road-surface { fill: none; stroke: #0b0f19; stroke-width: 20; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-road-marking { fill: none; stroke: #f59e0b; stroke-width: 1.5; stroke-dasharray: 5 5; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* 3D Isometric Buildings */
+        /* Buildings */
         .bldg-group { cursor: pointer; transition: transform 0.2s; }
         .bldg-side { fill: #1e293b; }
-        .bldg-top { fill: #111827; stroke: #38bdf8; stroke-width: 1.5; rx: 6; transition: 0.2s; }
-        .bldg-group:hover .bldg-top { fill: #1f2937; stroke: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.4)); }
-        .bldg-roof-detail { fill: #1e293b; rx: 3; }
-        .bldg-label { font-size: 11px; font-weight: 700; fill: #f9fafc; text-anchor: middle; pointer-events: none; }
-        .block-tag { font-size: 9px; font-weight: 800; fill: #38bdf8; text-anchor: middle; letter-spacing: 1px; }
+        .bldg-top { fill: #111827; stroke: #38bdf8; stroke-width: 1.5; rx: 5; transition: 0.2s; }
+        .bldg-group:hover .bldg-top { fill: #1f2937; stroke: #f59e0b; filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5)); }
+        .bldg-roof-detail { fill: #1e293b; rx: 2; }
+        .bldg-label { font-size: 10px; font-weight: 700; fill: #f9fafc; text-anchor: middle; pointer-events: none; }
+        .block-tag { font-size: 8px; font-weight: 800; fill: #38bdf8; text-anchor: middle; letter-spacing: 0.5px; }
 
-        /* Animated Active Road Path & Traveler */
+        /* Dynamic Pathing & Markers */
         .active-road-path { fill: none; stroke: #10b981; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 8 6; animation: roadFlow 0.8s linear infinite; filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); }
         @keyframes roadFlow { to { stroke-dashoffset: -14; } }
 
         .animated-traveler { fill: #38bdf8; stroke: #ffffff; stroke-width: 2.5; r: 7; filter: drop-shadow(0 0 8px #38bdf8); }
-
-        /* Stop Pins & Dynamic Amenities */
         .stop-glow { fill: rgba(16, 185, 129, 0.3); animation: pulseGlow 1.5s infinite alternate; }
         @keyframes pulseGlow { from { r: 12; opacity: 0.5; } to { r: 18; opacity: 0.9; } }
         .stop-pin { fill: #ef4444; stroke: #ffffff; stroke-width: 2; }
         .stop-text { fill: white; font-size: 11px; font-weight: bold; text-anchor: middle; }
-        .amenity-icon { fill: #f59e0b; font-size: 13px; font-weight: bold; text-anchor: middle; }
-        .tree-icon { fill: #059669; opacity: 0.75; }
+        .amenity-icon { fill: #f59e0b; font-size: 12px; font-weight: bold; text-anchor: middle; }
+        .tree-icon { fill: #047857; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -106,23 +107,29 @@
 <div class="card">
     <div class="header-bar">
         <h1>🏫 Campus Navigator</h1>
-        <span class="badge">ULTRA HD MAP v4.0</span>
+        <span class="badge">EXTENDED MAP v5.0</span>
     </div>
 
     <div class="route-builder">
         <label class="first">Quick Search Landmark:</label>
-        <input type="text" id="quick-search" placeholder="Type location (e.g. Library, Canteen)..." oninput="filterLocations(this.value)">
+        <input type="text" id="quick-search" placeholder="Type location (e.g. Auditorium, Pool, Boys Hostel)..." oninput="filterLocations(this.value)">
 
         <label>Start Point:</label>
         <div class="stop-row">
             <select class="location-select">
                 <option value="Main Gate">Main Gate Station</option>
+                <option value="Main Building">Main Administrative Building</option>
+                <option value="Auditorium">Grand Campus Auditorium</option>
                 <option value="Library">Central Library</option>
                 <option value="CS Dept">CS Department (Block A)</option>
                 <option value="EC Dept">EC Department (Block C)</option>
-                <option value="Hostels">Student Hostels</option>
+                <option value="Boys Hostel">Boys Hostel</option>
+                <option value="Girls Hostel">Girls Hostel</option>
+                <option value="Stationary">Stationary & Printing Shop</option>
                 <option value="Canteen">Campus Canteen</option>
-                <option value="Sports">Sports Complex</option>
+                <option value="Sports Complex">Sports Complex</option>
+                <option value="Pool Club">Swimming Pool Club</option>
+                <option value="Play Ground">Athletic Play Grounds</option>
             </select>
         </div>
 
@@ -133,13 +140,19 @@
         <label>Final Destination:</label>
         <div class="stop-row">
             <select class="location-select">
-                <option value="Canteen" selected>Campus Canteen</option>
+                <option value="Auditorium" selected>Grand Campus Auditorium</option>
                 <option value="Main Gate">Main Gate Station</option>
+                <option value="Main Building">Main Administrative Building</option>
                 <option value="Library">Central Library</option>
                 <option value="CS Dept">CS Department (Block A)</option>
                 <option value="EC Dept">EC Department (Block C)</option>
-                <option value="Hostels">Student Hostels</option>
-                <option value="Sports">Sports Complex</option>
+                <option value="Boys Hostel">Boys Hostel</option>
+                <option value="Girls Hostel">Girls Hostel</option>
+                <option value="Stationary">Stationary & Printing Shop</option>
+                <option value="Canteen">Campus Canteen</option>
+                <option value="Sports Complex">Sports Complex</option>
+                <option value="Pool Club">Swimming Pool Club</option>
+                <option value="Play Ground">Athletic Play Grounds</option>
             </select>
         </div>
 
@@ -152,9 +165,10 @@
 
         <label>Nearby Amenities Layer:</label>
         <div class="amenities-bar">
-            <span class="amenity-chip" onclick="toggleAmenity(this, 'restrooms')">Restrooms</span>
-            <span class="amenity-chip" onclick="toggleAmenity(this, 'water')">Water Station</span>
-            <span class="amenity-chip" onclick="toggleAmenity(this, 'ramps')">Wheelchair Ramps</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'male_washroom')">🚹 Male Washroom</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'female_washroom')">🚺 Female Washroom</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'water')">🚰 Water Station</span>
+            <span class="amenity-chip" onclick="toggleAmenity(this, 'ramps')">♿ Wheelchair Ramps</span>
         </div>
     </div>
 
@@ -173,109 +187,133 @@
 
     <div id="map-area">
         <div class="map-header">
-            <h4 style="font-size: 15px; font-weight: 700;">Vector Campus Map Layout</h4>
-            <span style="font-size: 12px; color: var(--text-muted);">Strict Road Graph Routing Engine</span>
+            <h4 style="font-size: 15px; font-weight: 700;">Complete Campus Map & Facilities</h4>
+            <span style="font-size: 12px; color: var(--text-muted);">Strict Road Network Navigation</span>
         </div>
         <div class="map-container">
-            <svg id="campus-svg" viewBox="0 0 650 450">
-                <!-- 1. CAMPUS GROUNDS & LANDSCAPING -->
-                <rect class="svg-grass" width="650" height="450" />
-                <rect class="svg-grass-patch" x="15" y="15" width="290" height="190" />
-                <rect class="svg-grass-patch" x="345" y="15" width="290" height="190" />
-                <rect class="svg-grass-patch" x="15" y="245" width="290" height="190" />
-                <rect class="svg-grass-patch" x="345" y="245" width="290" height="190" />
+            <svg id="campus-svg" viewBox="0 0 800 520">
+                <!-- 1. LANDSCAPING & GROUNDS -->
+                <rect class="svg-grass" width="800" height="520" />
+                
+                <rect class="svg-grass-patch" x="15" y="15" width="360" height="230" />
+                <rect class="svg-grass-patch" x="425" y="15" width="360" height="230" />
+                <rect class="svg-grass-patch" x="15" y="275" width="360" height="230" />
+                <rect class="svg-grass-patch" x="425" y="275" width="360" height="230" />
 
-                <!-- Plazas & Courtyards -->
-                <rect class="svg-plaza" x="110" y="25" width="120" height="45" />
-                <rect class="svg-plaza" x="350" y="25" width="130" height="45" />
-                <rect class="svg-plaza" x="350" y="235" width="130" height="45" />
+                <!-- Athletic Play Grounds & Swimming Pool -->
+                <rect class="svg-sports-ground" x="450" y="320" width="130" height="90" />
+                <ellipse cx="515" cy="365" rx="25" ry="15" fill="none" stroke="#10b981" stroke-width="1.5" />
+                <line x1="515" y1="320" x2="515" y2="410" stroke="#10b981" stroke-width="1.5" />
+                <text x="515" y="370" font-size="9" font-weight="bold" fill="#10b981" text-anchor="middle">PLAY GROUND</text>
 
-                <!-- Parking Zones -->
-                <rect class="svg-parking" x="25" y="325" width="45" height="35" />
-                <text x="47" y="347" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle">P</text>
-                <rect class="svg-parking" x="580" y="325" width="45" height="35" />
-                <text x="602" y="347" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle">P</text>
+                <rect class="svg-pool" x="610" y="330" width="60" height="70" />
+                <line x1="610" y1="345" x2="670" y2="345" stroke="#ffffff" stroke-width="1" opacity="0.5" />
+                <line x1="610" y1="360" x2="670" y2="360" stroke="#ffffff" stroke-width="1" opacity="0.5" />
+                <line x1="610" y1="375" x2="670" y2="375" stroke="#ffffff" stroke-width="1" opacity="0.5" />
+                <text x="640" y="368" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">POOL CLUB</text>
 
-                <!-- Water Ponds -->
-                <ellipse class="svg-water" cx="230" cy="155" rx="35" ry="22" />
-                <ellipse class="svg-water" cx="500" cy="155" rx="40" ry="25" />
+                <!-- Environmental Details -->
+                <ellipse class="svg-water" cx="240" cy="180" rx="30" ry="18" />
+                <rect class="svg-parking" x="25" y="380" width="45" height="35" />
+                <text x="47" y="402" font-size="10" font-weight="bold" fill="#64748b" text-anchor="middle">P</text>
 
-                <!-- Environment Trees -->
                 <g class="tree-icon">
-                    <circle cx="35" cy="40" r="8"/><circle cx="50" cy="45" r="7"/><circle cx="270" cy="40" r="8"/>
-                    <circle cx="280" cy="150" r="9"/><circle cx="370" cy="155" r="8"/><circle cx="585" cy="150" r="9"/>
-                    <circle cx="35" cy="270" r="8"/><circle cx="280" cy="280" r="8"/><circle cx="585" cy="275" r="9"/>
+                    <circle cx="35" cy="40" r="7"/><circle cx="50" cy="45" r="6"/><circle cx="340" cy="40" r="7"/>
+                    <circle cx="340" cy="180" r="8"/><circle cx="450" cy="180" r="7"/><circle cx="750" cy="180" r="8"/>
+                    <circle cx="35" cy="300" r="7"/><circle cx="340" cy="310" r="8"/><circle cx="750" cy="310" r="8"/>
                 </g>
 
-                <!-- 2. HIGH-VISIBILITY ROAD NETWORK -->
+                <!-- 2. STRICT ROAD GRAPH NETWORK -->
                 <g id="roads-layer">
-                    <path class="svg-road-curb" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
-                    <path class="svg-road-surface" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
-                    <path class="svg-road-marking" d="M 80 410 L 80 80 L 320 80 L 320 370 L 570 370 L 570 80 L 320 80 M 80 220 L 570 220" />
+                    <path class="svg-road-curb" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
+                    <path class="svg-road-surface" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
+                    <path class="svg-road-marking" d="M 80 480 L 80 80 L 400 80 L 400 440 L 720 440 L 720 80 L 400 80 M 80 260 L 720 260" />
                 </g>
 
-                <!-- 3. ISOMETRIC 3D BUILDINGS LAYER -->
+                <!-- 3. BUILDINGS LAYER -->
                 <g id="buildings-layer">
                     <!-- Main Gate Station -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="20" y="380" width="110" height="25" rx="4"/>
-                        <rect class="bldg-top" x="20" y="373" width="110" height="25" />
-                        <rect class="bldg-roof-detail" x="60" y="378" width="30" height="15" />
-                        <text class="bldg-label" x="75" y="390">Main Gate Station</text>
+                        <rect class="bldg-side" x="20" y="440" width="110" height="25" rx="4"/>
+                        <rect class="bldg-top" x="20" y="433" width="110" height="25" />
+                        <text class="bldg-label" x="75" y="450">Main Gate Station</text>
+                    </g>
+
+                    <!-- Main Administrative Building -->
+                    <g class="bldg-group">
+                        <rect class="bldg-side" x="120" y="35" width="120" height="35" rx="4"/>
+                        <rect class="bldg-top" x="120" y="28" width="120" height="35" />
+                        <text class="block-tag" x="180" y="22">ADMINISTRATION</text>
+                        <text class="bldg-label" x="180" y="50">Main Building</text>
+                    </g>
+
+                    <!-- Grand Campus Auditorium -->
+                    <g class="bldg-group">
+                        <rect class="bldg-side" x="260" y="35" width="110" height="35" rx="4"/>
+                        <rect class="bldg-top" x="260" y="28" width="110" height="35" />
+                        <text class="bldg-label" x="315" y="50">Auditorium</text>
                     </g>
 
                     <!-- Central Library -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="120" y="35" width="100" height="35" rx="4"/>
-                        <rect class="bldg-top" x="120" y="28" width="100" height="35" />
-                        <rect class="bldg-roof-detail" x="150" y="34" width="40" height="20" />
-                        <text class="bldg-label" x="170" y="50">Central Library</text>
+                        <rect class="bldg-side" x="120" y="115" width="110" height="35" rx="4"/>
+                        <rect class="bldg-top" x="120" y="108" width="110" height="35" />
+                        <text class="bldg-label" x="175" y="130">Central Library</text>
                     </g>
 
                     <!-- CS Dept (Block A) -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="360" y="35" width="110" height="35" rx="4"/>
-                        <rect class="bldg-top" x="360" y="28" width="110" height="35" />
-                        <rect class="bldg-roof-detail" x="390" y="34" width="50" height="20" />
-                        <text class="block-tag" x="415" y="22">BLOCK A</text>
-                        <text class="bldg-label" x="415" y="50">CS Department</text>
+                        <rect class="bldg-side" x="440" y="35" width="110" height="35" rx="4"/>
+                        <rect class="bldg-top" x="440" y="28" width="110" height="35" />
+                        <text class="block-tag" x="495" y="22">BLOCK A</text>
+                        <text class="bldg-label" x="495" y="50">CS Department</text>
                     </g>
 
                     <!-- EC Dept (Block C) -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="360" y="245" width="110" height="35" rx="4"/>
-                        <rect class="bldg-top" x="360" y="238" width="110" height="35" />
-                        <rect class="bldg-roof-detail" x="390" y="244" width="50" height="20" />
-                        <text class="block-tag" x="415" y="232">BLOCK C</text>
-                        <text class="bldg-label" x="415" y="260">EC Department</text>
+                        <rect class="bldg-side" x="580" y="35" width="110" height="35" rx="4"/>
+                        <rect class="bldg-top" x="580" y="28" width="110" height="35" />
+                        <text class="block-tag" x="635" y="22">BLOCK C</text>
+                        <text class="bldg-label" x="635" y="50">EC Department</text>
                     </g>
 
-                    <!-- Student Hostels -->
+                    <!-- Boys Hostel -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="120" y="245" width="110" height="35" rx="4"/>
-                        <rect class="bldg-top" x="120" y="238" width="110" height="35" />
-                        <rect class="bldg-roof-detail" x="150" y="244" width="50" height="20" />
-                        <text class="bldg-label" x="175" y="260">Student Hostels</text>
+                        <rect class="bldg-side" x="120" y="285" width="100" height="35" rx="4"/>
+                        <rect class="bldg-top" x="120" y="278" width="100" height="35" />
+                        <text class="bldg-label" x="170" y="300">Boys Hostel</text>
+                    </g>
+
+                    <!-- Girls Hostel -->
+                    <g class="bldg-group">
+                        <rect class="bldg-side" x="240" y="285" width="100" height="35" rx="4"/>
+                        <rect class="bldg-top" x="240" y="278" width="100" height="35" />
+                        <text class="bldg-label" x="290" y="300">Girls Hostel</text>
+                    </g>
+
+                    <!-- Stationary & Printing Shop -->
+                    <g class="bldg-group">
+                        <rect class="bldg-side" x="120" y="375" width="110" height="30" rx="4"/>
+                        <rect class="bldg-top" x="120" y="368" width="110" height="30" />
+                        <text class="bldg-label" x="175" y="387">Stationary Shop</text>
                     </g>
 
                     <!-- Campus Canteen -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="360" y="315" width="110" height="35" rx="4"/>
-                        <rect class="bldg-top" x="360" y="308" width="110" height="35" />
-                        <rect class="bldg-roof-detail" x="390" y="314" width="50" height="20" />
-                        <text class="bldg-label" x="415" y="330">Campus Canteen</text>
+                        <rect class="bldg-side" x="250" y="375" width="110" height="30" rx="4"/>
+                        <rect class="bldg-top" x="250" y="368" width="110" height="30" />
+                        <text class="bldg-label" x="305" y="387">Campus Canteen</text>
                     </g>
 
                     <!-- Sports Complex -->
                     <g class="bldg-group">
-                        <rect class="bldg-side" x="120" y="125" width="110" height="35" rx="4"/>
-                        <rect class="bldg-top" x="120" y="118" width="110" height="35" />
-                        <rect class="bldg-roof-detail" x="150" y="124" width="50" height="20" />
-                        <text class="bldg-label" x="175" y="140">Sports Complex</text>
+                        <rect class="bldg-side" x="450" y="280" width="120" height="30" rx="4"/>
+                        <rect class="bldg-top" x="450" y="273" width="120" height="30" />
+                        <text class="bldg-label" x="510" y="292">Sports Complex</text>
                     </g>
                 </g>
 
-                <!-- 4. ACTIVE ROUTE, ANIMATED TRAVELER & MARKERS -->
+                <!-- 4. ACTIVE ROUTE & MARKERS -->
                 <path id="active-road-path" class="active-road-path" d="" />
                 <circle id="animated-traveler" class="animated-traveler" cx="-20" cy="-20" />
                 <g id="amenities-layer"></g>
@@ -291,25 +329,49 @@
     let animationTimer = null;
 
     const landmarks = {
-        "Main Gate": "J_GATE", "Library": "J_LIB", "CS Dept": "J_CS",
-        "EC Dept": "J_EC", "Hostels": "J_HOSTEL", "Canteen": "J_CANTEEN", "Sports": "J_SPORTS"
+        "Main Gate": "J_GATE", "Main Building": "J_MAIN_BLDG", "Auditorium": "J_AUDI", 
+        "Library": "J_LIB", "CS Dept": "J_CS", "EC Dept": "J_EC", 
+        "Boys Hostel": "J_BHOSTEL", "Girls Hostel": "J_GHOSTEL", 
+        "Stationary": "J_STATIONARY", "Canteen": "J_CANTEEN", 
+        "Sports Complex": "J_SPORTS", "Pool Club": "J_POOL", "Play Ground": "J_GROUND"
     };
 
     const nodes = {
-        "J_GATE": { x: 80, y: 410 }, "J_SOUTH": { x: 80, y: 370 }, "J_MID_W": { x: 80, y: 220 },
-        "J_SPORTS": { x: 80, y: 140 }, "J_NORTH_W": { x: 80, y: 80 }, "J_LIB": { x: 170, y: 80 },
-        "J_NORTH_C": { x: 320, y: 80 }, "J_CS": { x: 415, y: 80 }, "J_NORTH_E": { x: 570, y: 80 },
-        "J_MID_C": { x: 320, y: 220 }, "J_HOSTEL": { x: 175, y: 220 }, "J_EC": { x: 415, y: 220 },
-        "J_MID_E": { x: 570, y: 220 }, "J_SOUTH_C": { x: 320, y: 370 }, "J_CANTEEN": { x: 415, y: 370 }, "J_SOUTH_E": { x: 570, y: 370 }
+        "J_GATE": { x: 80, y: 480 }, "J_SOUTH_W": { x: 80, y: 440 }, "J_MID_W": { x: 80, y: 260 },
+        "J_LIB_NODE": { x: 80, y: 125 }, "J_NORTH_W": { x: 80, y: 80 }, 
+        "J_MAIN_BLDG": { x: 180, y: 80 }, "J_AUDI": { x: 315, y: 80 }, "J_NORTH_C": { x: 400, y: 80 }, 
+        "J_CS": { x: 495, y: 80 }, "J_EC": { x: 635, y: 80 }, "J_NORTH_E": { x: 720, y: 80 },
+        "J_MID_C": { x: 400, y: 260 }, "J_BHOSTEL": { x: 170, y: 260 }, "J_GHOSTEL": { x: 290, y: 260 },
+        "J_SPORTS": { x: 510, y: 260 }, "J_MID_E": { x: 720, y: 260 },
+        "J_SOUTH_C": { x: 400, y: 440 }, "J_STATIONARY": { x: 175, y: 440 }, "J_CANTEEN": { x: 305, y: 440 },
+        "J_GROUND": { x: 515, y: 440 }, "J_POOL": { x: 640, y: 440 }, "J_SOUTH_E": { x: 720, y: 440 },
+        "J_LIB": { x: 175, y: 125 }
     };
 
     const roadGraph = {
-        "J_GATE": ["J_SOUTH"], "J_SOUTH": ["J_GATE", "J_MID_W"], "J_MID_W": ["J_SOUTH", "J_SPORTS", "J_HOSTEL"],
-        "J_SPORTS": ["J_MID_W", "J_NORTH_W"], "J_NORTH_W": ["J_SPORTS", "J_LIB"], "J_LIB": ["J_NORTH_W", "J_NORTH_C"],
-        "J_NORTH_C": ["J_LIB", "J_CS", "J_MID_C"], "J_CS": ["J_NORTH_C", "J_NORTH_E"], "J_NORTH_E": ["J_CS", "J_MID_E"],
-        "J_MID_C": ["J_NORTH_C", "J_HOSTEL", "J_EC", "J_SOUTH_C"], "J_HOSTEL": ["J_MID_W", "J_MID_C"],
-        "J_EC": ["J_MID_C", "J_MID_E"], "J_MID_E": ["J_NORTH_E", "J_EC", "J_SOUTH_E"], "J_SOUTH_C": ["J_MID_C", "J_CANTEEN"],
-        "J_CANTEEN": ["J_SOUTH_C", "J_SOUTH_E"], "J_SOUTH_E": ["J_MID_E", "J_CANTEEN"]
+        "J_GATE": ["J_SOUTH_W"], 
+        "J_SOUTH_W": ["J_GATE", "J_STATIONARY", "J_MID_W"],
+        "J_STATIONARY": ["J_SOUTH_W", "J_CANTEEN"],
+        "J_CANTEEN": ["J_STATIONARY", "J_SOUTH_C"],
+        "J_SOUTH_C": ["J_CANTEEN", "J_MID_C", "J_GROUND"],
+        "J_GROUND": ["J_SOUTH_C", "J_POOL"],
+        "J_POOL": ["J_GROUND", "J_SOUTH_E"],
+        "J_SOUTH_E": ["J_POOL", "J_MID_E"],
+        "J_MID_W": ["J_SOUTH_W", "J_BHOSTEL", "J_LIB_NODE"],
+        "J_BHOSTEL": ["J_MID_W", "J_GHOSTEL"],
+        "J_GHOSTEL": ["J_BHOSTEL", "J_MID_C"],
+        "J_MID_C": ["J_GHOSTEL", "J_NORTH_C", "J_SOUTH_C", "J_SPORTS"],
+        "J_SPORTS": ["J_MID_C", "J_MID_E"],
+        "J_MID_E": ["J_SPORTS", "J_NORTH_E", "J_SOUTH_E"],
+        "J_LIB_NODE": ["J_MID_W", "J_LIB", "J_NORTH_W"],
+        "J_LIB": ["J_LIB_NODE"],
+        "J_NORTH_W": ["J_LIB_NODE", "J_MAIN_BLDG"],
+        "J_MAIN_BLDG": ["J_NORTH_W", "J_AUDI"],
+        "J_AUDI": ["J_MAIN_BLDG", "J_NORTH_C"],
+        "J_NORTH_C": ["J_AUDI", "J_CS", "J_MID_C"],
+        "J_CS": ["J_NORTH_C", "J_EC"],
+        "J_EC": ["J_CS", "J_NORTH_E"],
+        "J_NORTH_E": ["J_EC", "J_MID_E"]
     };
 
     function setMode(btn, mode) {
@@ -327,14 +389,24 @@
 
     function renderAmenities() {
         let html = '';
-        if (activeAmenities.has('restrooms')) {
-            html += `<text class="amenity-icon" x="170" y="100">🚻</text><text class="amenity-icon" x="415" y="100">🚻</text>`;
+        if (activeAmenities.has('male_washroom')) {
+            html += `<text class="amenity-icon" x="180" y="100">🚹</text>
+                     <text class="amenity-icon" x="495" y="100">🚹</text>
+                     <text class="amenity-icon" x="170" y="320">🚹</text>`;
+        }
+        if (activeAmenities.has('female_washroom')) {
+            html += `<text class="amenity-icon" x="315" y="100">🚺</text>
+                     <text class="amenity-icon" x="635" y="100">🚺</text>
+                     <text class="amenity-icon" x="290" y="320">🚺</text>`;
         }
         if (activeAmenities.has('water')) {
-            html += `<text class="amenity-icon" x="175" y="200">🚰</text><text class="amenity-icon" x="415" y="350">🚰</text>`;
+            html += `<text class="amenity-icon" x="175" y="150">🚰</text>
+                     <text class="amenity-icon" x="305" y="415">🚰</text>
+                     <text class="amenity-icon" x="510" y="310">🚰</text>`;
         }
         if (activeAmenities.has('ramps')) {
-            html += `<text class="amenity-icon" x="80" y="390">♿</text><text class="amenity-icon" x="320" y="240">♿</text>`;
+            html += `<text class="amenity-icon" x="80" y="460">♿</text>
+                     <text class="amenity-icon" x="400" y="280">♿</text>`;
         }
         document.getElementById('amenities-layer').innerHTML = html;
     }
@@ -377,9 +449,11 @@
                 <option value="CS Dept">CS Department (Block A)</option>
                 <option value="EC Dept">EC Department (Block C)</option>
                 <option value="Library">Central Library</option>
-                <option value="Hostels">Student Hostels</option>
+                <option value="Boys Hostel">Boys Hostel</option>
+                <option value="Girls Hostel">Girls Hostel</option>
                 <option value="Canteen">Campus Canteen</option>
-                <option value="Sports">Sports Complex</option>
+                <option value="Stationary">Stationary & Printing Shop</option>
+                <option value="Sports Complex">Sports Complex</option>
             </select>
             <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
         `;
