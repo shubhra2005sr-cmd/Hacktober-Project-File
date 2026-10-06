@@ -4,20 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Navigation System</title>
-    <!-- Leaflet CSS for Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f0f2f5; color: #333; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card { background: white; width: 100%; max-width: 650px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { color: #1a73e8; margin-bottom: 20px; font-size: 24px; text-align: center; }
         label { font-weight: 600; display: block; margin: 12px 0 6px; }
+        .stop-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
         select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px; }
-        button { background: #1a73e8; color: white; border: none; font-weight: bold; margin-top: 20px; cursor: pointer; transition: 0.2s; }
-        button:hover { background: #1557b0; }
+        .btn-add { background: #f1f3f4; color: #1a73e8; border: 1px dashed #1a73e8; font-weight: 600; margin-top: 8px; cursor: pointer; }
+        .btn-add:hover { background: #e8f0fe; }
+        .btn-remove { background: #ea4335; color: white; border: none; padding: 12px 15px; width: auto; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-submit { background: #1a73e8; color: white; border: none; font-weight: bold; margin-top: 15px; cursor: pointer; transition: 0.2s; }
+        .btn-submit:hover { background: #1557b0; }
         .result { margin-top: 20px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
         .result p { margin: 6px 0; font-size: 15px; }
-        #map { height: 250px; width: 100%; border-radius: 8px; margin-top: 15px; display: none; }
+        
+        /* Custom SVG Campus Map Container */
+        #campus-map-container { margin-top: 20px; display: none; text-align: center; }
+        svg { background: #eef5e8; border: 2px solid #333; border-radius: 10px; width: 100%; height: auto; max-height: 380px; }
+        .building { fill: #d0e1fd; stroke: #1a73e8; stroke-width: 2; rx: 6; cursor: pointer; }
+        .building-label { font-size: 11px; font-weight: bold; fill: #1557b0; text-anchor: middle; pointer-events: none; }
+        .road { stroke: #d0d7de; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+        .path-line { stroke: #ea4335; stroke-width: 5; stroke-dasharray: 6; animation: dash 1s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -12; } }
+        .stop-pin { fill: #ea4335; stroke: #fff; stroke-width: 2; }
     </style>
 </head>
 <body>
@@ -25,108 +36,160 @@
 <div class="card">
     <h1>🏫 Campus Navigation System</h1>
 
-    <label for="start">Select Starting Location:</label>
-    <select id="start">
-        <option value="Main Gate">Main Gate</option>
-        <option value="Library">Central Library</option>
-        <option value="CS Dept">CS Department</option>
-        <option value="Hostel Area">Hostel Area</option>
-    </select>
+    <label>Starting Location:</label>
+    <div class="stop-row">
+        <select class="location-select">
+            <option value="Main Gate">Main Gate</option>
+            <option value="Library">Central Library</option>
+            <option value="CS Dept">CS Department</option>
+            <option value="EC Dept">EC Department</option>
+            <option value="Hostel Area">Hostel Area</option>
+            <option value="Canteen">Campus Canteen</option>
+            <option value="Sports Complex">Sports Complex</option>
+        </select>
+    </div>
 
-    <label for="destination">Select Destination:</label>
-    <select id="destination">
-        <option value="CS Dept">CS Department</option>
-        <option value="Library">Central Library</option>
-        <option value="EC Dept">EC Department</option>
-        <option value="Canteen">Campus Canteen</option>
-        <option value="Sports Complex">Sports Complex</option>
-    </select>
+    <div id="additional-stops"></div>
 
-    <button onclick="calculateRoute()">Find Route & Directions</button>
+    <button type="button" class="btn-add" onclick="addStop()">+ Add a Stop / Via Point</button>
+
+    <label style="margin-top: 15px;">Final Destination:</label>
+    <div class="stop-row">
+        <select class="location-select">
+            <option value="Canteen" selected>Campus Canteen</option>
+            <option value="Main Gate">Main Gate</option>
+            <option value="Library">Central Library</option>
+            <option value="CS Dept">CS Department</option>
+            <option value="EC Dept">EC Department</option>
+            <option value="Hostel Area">Hostel Area</option>
+            <option value="Sports Complex">Sports Complex</option>
+        </select>
+    </div>
+
+    <button type="button" class="btn-submit" onclick="calculateMultiStopRoute()">Find Route & Directions</button>
 
     <div id="result" class="result">
-        <h3 style="color: #1a73e8; margin-bottom: 8px;">Route Details</h3>
-        <p><strong>Distance:</strong> <span id="dist"></span> meters</p>
+        <h3 style="color: #1a73e8; margin-bottom: 8px;">Multi-Stop Route Details</h3>
+        <p><strong>Full Route:</strong> <span id="route-path"></span></p>
+        <p><strong>Total Distance:</strong> <span id="dist"></span> meters</p>
         <p><strong>Est. Time:</strong> <span id="time"></span> mins (walking)</p>
         <p><strong>Directions:</strong> <span id="directions"></span></p>
     </div>
 
-    <!-- Map Container -->
-    <div id="map"></div>
+    <div id="campus-map-container">
+        <h4 style="margin-bottom: 8px; color: #333;">Campus Layout Plan</h4>
+        <svg id="campus-svg" viewBox="0 0 500 350">
+            <!-- Campus Green Grounds & Roads -->
+            <path class="road" d="M 60 300 L 60 80 L 220 80 L 220 220 L 440 220 L 440 80" />
+            <path class="road" d="M 60 180 L 440 180" />
+
+            <!-- Buildings -->
+            <g id="buildings-group">
+                <!-- Main Gate -->
+                <rect class="building" x="20" y="270" width="80" height="40" />
+                <text class="building-label" x="60" y="295">Main Gate</text>
+
+                <!-- Library -->
+                <rect class="building" x="20" y="50" width="80" height="50" />
+                <text class="building-label" x="60" y="80">Library</text>
+
+                <!-- CS Dept -->
+                <rect class="building" x="180" y="50" width="80" height="50" />
+                <text class="building-label" x="220" y="80">CS Dept</text>
+
+                <!-- EC Dept -->
+                <rect class="building" x="180" y="195" width="80" height="50" />
+                <text class="building-label" x="220" y="225">EC Dept</text>
+
+                <!-- Hostel Area -->
+                <rect class="building" x="20" y="155" width="80" height="50" />
+                <text class="building-label" x="60" y="185">Hostels</text>
+
+                <!-- Canteen -->
+                <rect class="building" x="400" y="155" width="80" height="50" />
+                <text class="building-label" x="440" y="185">Canteen</text>
+
+                <!-- Sports Complex -->
+                <rect class="building" x="400" y="50" width="80" height="50" />
+                <text class="building-label" x="440" y="80">Sports</text>
+            </g>
+
+            <!-- Dynamic Route Overlay -->
+            <path id="active-route" class="path-line" d="" fill="none" />
+            <g id="pins-group"></g>
+        </svg>
+    </div>
 </div>
 
-<!-- Leaflet JS for Map -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let map, startMarker, endMarker, routeLine;
-
-    // Campus landmark coordinates (Sample Campus Grid)
-    const locations = {
-        "Main Gate": [12.9716, 77.5946],
-        "Library": [12.9722, 77.5952],
-        "CS Dept": [12.9730, 77.5960],
-        "EC Dept": [12.9732, 77.5948],
-        "Hostel Area": [12.9705, 77.5935],
-        "Canteen": [12.9725, 77.5958],
-        "Sports Complex": [12.9740, 77.5970]
+    // Map Coordinates on Canvas
+    const nodeCoords = {
+        "Main Gate": { x: 60, y: 290 },
+        "Library": { x: 60, y: 75 },
+        "CS Dept": { x: 220, y: 75 },
+        "EC Dept": { x: 220, y: 220 },
+        "Hostel Area": { x: 60, y: 180 },
+        "Canteen": { x: 440, y: 180 },
+        "Sports Complex": { x: 440, y: 75 }
     };
 
-    const routes = {
-        "Main Gate-CS Dept": { dist: 450, time: 6, dir: "Head straight along Main Avenue, turn right at Block B." },
-        "Main Gate-Library": { dist: 250, time: 3, dir: "Walk straight 200m; Library is on your left opposite admin block." },
-        "Library-CS Dept": { dist: 300, time: 4, dir: "Take internal walkway behind Library towards Academic Block 1." },
-        "CS Dept-EC Dept": { dist: 150, time: 2, dir: "Cross the lawn directly facing CS Block to reach EC Block." },
-        "CS Dept-Canteen": { dist: 200, time: 3, dir: "Walk south past auditorium; Canteen is right behind." },
-        "Hostel Area-Sports Complex": { dist: 500, time: 7, dir: "Follow perimeter road past Hostel Gate 2 towards open ground." }
-    };
+    function addStop() {
+        const container = document.getElementById("additional-stops");
+        const div = document.createElement("div");
+        div.className = "stop-row";
+        div.innerHTML = `
+            <select class="location-select">
+                <option value="EC Dept">EC Department</option>
+                <option value="CS Dept">CS Department</option>
+                <option value="Library">Central Library</option>
+                <option value="Hostel Area">Hostel Area</option>
+                <option value="Canteen">Campus Canteen</option>
+                <option value="Sports Complex">Sports Complex</option>
+            </select>
+            <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+        `;
+        container.appendChild(div);
+    }
 
-    function calculateRoute() {
-        const start = document.getElementById("start").value;
-        const dest = document.getElementById("destination").value;
-        const resDiv = document.getElementById("result");
-        const mapDiv = document.getElementById("map");
+    function calculateMultiStopRoute() {
+        const selects = document.querySelectorAll(".location-select");
+        const stops = Array.from(selects).map(s => s.value);
 
-        if (start === dest) {
-            alert("Starting location and destination cannot be the same!");
-            resDiv.style.display = "none";
-            mapDiv.style.display = "none";
-            return;
+        if (new Set(stops).size !== stops.length) {
+            alert("Please ensure all stops and destinations in your route are unique.");
         }
 
-        const key = `${start}-${dest}`;
-        const route = routes[key] || { 
-            dist: Math.floor(Math.random() * 300) + 200, 
-            time: Math.floor(Math.random() * 5) + 3, 
-            dir: `Follow central campus signage from ${start} toward ${dest}.` 
-        };
+        let totalDist = 0;
+        let svgPathData = "";
+        let pinsHTML = "";
 
-        document.getElementById("dist").innerText = route.dist;
-        document.getElementById("time").innerText = route.time;
-        document.getElementById("directions").innerText = route.dir;
-        resDiv.style.display = "block";
-        mapDiv.style.display = "block";
+        stops.forEach((stop, idx) => {
+            const coord = nodeCoords[stop];
+            if (idx === 0) {
+                svgPathData += `M ${coord.x} ${coord.y}`;
+            } else {
+                svgPathData += ` L ${coord.x} ${coord.y}`;
+                totalDist += Math.floor(Math.random() * 150) + 120;
+            }
 
-        // Initialize or update Leaflet Map
-        const startCoords = locations[start] || [12.9716, 77.5946];
-        const destCoords = locations[dest] || [12.9730, 77.5960];
+            pinsHTML += `<circle class="stop-pin" cx="${coord.x}" cy="${coord.y}" r="6" />`;
+            pinsHTML += `<text x="${coord.x}" y="${coord.y - 10}" font-size="10" font-weight="bold" fill="#ea4335" text-anchor="middle">${idx + 1}</text>`;
+        });
 
-        if (!map) {
-            map = L.map('map').setView(startCoords, 16);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-        }
+        const estTime = Math.ceil(totalDist / 70);
 
-        if (startMarker) map.removeLayer(startMarker);
-        if (endMarker) map.removeLayer(endMarker);
-        if (routeLine) map.removeLayer(routeLine);
+        // Update UI
+        document.getElementById("route-path").innerText = stops.join(" ➔ ");
+        document.getElementById("dist").innerText = totalDist;
+        document.getElementById("time").innerText = estTime;
+        document.getElementById("directions").innerText = `Follow campus internal walkway sequentially: ${stops.join(" via ")}.`;
 
-        startMarker = L.marker(startCoords).addTo(map).bindPopup(`Start: ${start}`).openPopup();
-        endMarker = L.marker(destCoords).addTo(map).bindPopup(`Destination: ${dest}`);
-        routeLine = L.polyline([startCoords, destCoords], { color: '#1a73e8', weight: 4, dashArray: '5, 10' }).addTo(map);
+        document.getElementById("result").style.display = "block";
+        document.getElementById("campus-map-container").style.display = "block";
 
-        map.fitBounds([startCoords, destCoords], { padding: [30, 30] });
-        setTimeout(() => { map.invalidateSize(); }, 200);
+        // Update SVG Map
+        document.getElementById("active-route").setAttribute("d", svgPathData);
+        document.getElementById("pins-group").innerHTML = pinsHTML;
     }
 </script>
 
